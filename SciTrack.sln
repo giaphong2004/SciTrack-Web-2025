@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36511.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciTrack.web", "SciTrack\SciTrack.web.csproj", "{08FB21E4-F072-4BB7-A3CD-88EA2FC6FDE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciTrack.Api", "SciTrack.Api\SciTrack.Api.csproj", "{5668F87E-A86D-456C-B114-CCCAA55E77C2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08FB21E4-F072-4BB7-A3CD-88EA2FC6FDE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08FB21E4-F072-4BB7-A3CD-88EA2FC6FDE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08FB21E4-F072-4BB7-A3CD-88EA2FC6FDE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08FB21E4-F072-4BB7-A3CD-88EA2FC6FDE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5668F87E-A86D-456C-B114-CCCAA55E77C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5668F87E-A86D-456C-B114-CCCAA55E77C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5668F87E-A86D-456C-B114-CCCAA55E77C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5668F87E-A86D-456C-B114-CCCAA55E77C2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1BBAD555-4F6D-4A58-80E4-DD7842ED2A65}
+	EndGlobalSection
+EndGlobal
