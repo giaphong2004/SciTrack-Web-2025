@@ -1,0 +1,72 @@
+# ===== Build output
+bin/
+obj/
+out/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+
+# ===== Visual Studio / Rider / VS Code
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+_ReSharper*/
+*.DotSettings.user
+.idea/
+.vscode/
+
+# ===== NuGet / Packages
+*.nupkg
+*.snupkg
+# (packages/ rarely used now; keep if you restore locally)
+packages/
+
+# ===== Logs / Coverage / Test
+*.log
+logs/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# ===== IIS / Publish
+*.Publish.xml
+*.pubxml.user
+*.publishsettings
+# Nếu PublishProfiles chứa secret => cân nhắc ignore cả folder:
+# Properties/PublishProfiles/
+
+# ===== Cache & temp
+*.pidb
+*.svclog
+*.tmp
+*.temp
+*.DS_Store
+Thumbs.db
+
+# ===== Frontend (nếu xài npm/yarn)
+node_modules/
+# build artifacts (tuỳ dự án FE)
+wwwroot/dist/
+wwwroot/**/cache/
+
+# ===== Local DB / EF misc
+*.mdf
+*.ldf
+*.db
+*.db-shm
+*.db-wal
+*.jfm
+*.dbmdl
+
+# ===== User secrets / local config
+# Giữ appsettings.json & appsettings.Development.json TRONG repo nhưng KHÔNG để secret
+# Ignore file local-override (nếu có)
+appsettings.*.local.json
+appsettings.local.json
+
+# ===== Don’t ignore these (nhắc để team nhớ)
+# !Migrations/   # EF migrations PHẢI commit (đừng mở block này)
+# !Properties/launchSettings.json  # giữ để team dùng chung port/profiles
