@@ -3,58 +3,21 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"] - Quản lý KH&CN</title>
+
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    <style>
-        body {
-            display: flex;
-            margin: 0;
-            font-family: "Segoe UI", sans-serif;
-        }
 
-        /* Sidebar */
-        .sidebar {
-            width: 230px;
-            background-color: #007bff;
-            color: white;
-            min-height: 100vh;
-            padding: 20px 10px;
-        }
-
-            .sidebar h4 {
-                text-align: center;
-                font-size: 1.2rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .sidebar a {
-                color: white;
-                text-decoration: none;
-                display: block;
-                padding: 10px 15px;
-                border-radius: 6px;
-                transition: 0.2s;
-            }
-
-                .sidebar a:hover {
-                    background-color: #0099FF;
-                }
-
-        /* Main content */
-        .content {
-            flex: 1;
-            padding: 25px;
-            background-color: #f5f6fa;
-        }
-    </style>
+    <!-- CSS riêng -->
+    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <div class="sidebar">
         <h4>Quản lý KHCN</h4>
-        <a href="/TaiSan">Tài sản khoa học và công nghệ(TSKH&CN)</a>
-        <a href="/DeTai">Đề tài khoa học công nghệ(DTKHCN)</a>
-        <a href="/KetQua">Kết quả đề tài(KQDT)</a>
-        <a href="/ThietBi">Tình trạng thiết bị(TTBKHCN)</a>
-        <a href="/HopDong">Hợp đồng khoa học công nghệ(HDKHCN)</a>
+        <a href="/TaiSan">Tài sản khoa học và công nghệ (TSKH&CN)</a>
+        <a href="/DeTai">Đề tài khoa học công nghệ (DTKHCN)</a>
+        <a href="/KetQua">Kết quả đề tài (KQDT)</a>
+        <a href="/ThietBi">Tình trạng thiết bị (TTBKHCN)</a>
+        <a href="/HopDong">Hợp đồng khoa học công nghệ (HDKHCN)</a>
     </div>
 
     <div class="content">

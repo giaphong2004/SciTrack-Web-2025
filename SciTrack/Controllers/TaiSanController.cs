@@ -9,9 +9,7 @@ namespace SciTrack.web.Controllers
         {
             var list = new List<TaiSan>
             {
-                new TaiSan { MaTaiSan = "TS001", TenTaiSan = "Máy tính Dell", TrangThai = "Đang sử dụng" },
-                new TaiSan { MaTaiSan = "TS002", TenTaiSan = "Máy in Canon", TrangThai = "Bảo trì" },
-                new TaiSan { MaTaiSan = "TS003", TenTaiSan = "Bộ đo nhiệt độ", TrangThai = "Tốt" }
+             
             };
             return View(list);
         }
