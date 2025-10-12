@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SciTrack.web.Models;
 
 namespace SciTrack.web.Controllers
 {
@@ -7,11 +6,7 @@ namespace SciTrack.web.Controllers
     {
         public IActionResult Index()
         {
-            var list = new List<TaiSan>
-            {
-             
-            };
-            return View(list);
+            return View();
         }
     }
 }
