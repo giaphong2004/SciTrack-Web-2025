@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "Tài sản KH&CN";
+}
+
+<div class="d-flex" style="min-height: 100vh; background-color: #f8fafc;">
+    <!-- NỘI DUNG CHÍNH -->
+    <div class="flex-fill p-4">
+        <h5 class="fw-bold text-primary">Phần mềm quản lý KH&CN — Giao diện xanh dương</h5>
+        <h6 class="mt-4 mb-3">TSKH&CN — Tài sản KH&CN</h6>
+
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Form bên trái -->
+                    <div class="col-md-7">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Số danh mục (ĐI1.1)</label>
+                                <input type="text" class="form-control" />
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Tên (ĐI1.2)</label>
+                                <input type="text" class="form-control" placeholder="Nhập tên tài sản" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nguyên giá (ĐI1.3)</label>
+                                <input type="text" class="form-control" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Khấu hao (ĐI1.4)</label>
+                                <input type="text" class="form-control" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Hao mòn (ĐI1.5)</label>
+                                <input type="text" class="form-control" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Giá trị còn lại (ĐI1.6)</label>
+                                <input type="text" class="form-control" />
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Trạng thái tài sản (ĐI1.7)</label>
+                                <input type="text" class="form-control" />
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Ngày cập nhật (ĐI1.8)</label>
+                                <input type="date" class="form-control" />
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Mã số đề tài KH&CN (ĐI1.9)</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex gap-2">
+                            <button class="btn btn-success">Thêm mới</button>
+                            <button class="btn btn-primary">Lưu</button>
+                            <button class="btn btn-danger">Xóa</button>
+                            <button class="btn btn-secondary">Đóng</button>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách tài sản bên phải -->
+                    <div class="col-md-5">
+                        <h6 class="fw-bold mb-3">Danh sách tài sản</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Mã</th>
+                                        <th>Tên</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                               
+                            </table>
+                        </div>
+                        <small class="text-muted">Click hàng để chỉnh sửa / in / xóa</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
