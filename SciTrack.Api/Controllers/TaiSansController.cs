@@ -42,13 +42,18 @@ namespace SciTrack.Api.Controllers
         {
             var newTaiSan = new TaiSan
             {
-                Ten = taiSanDto.Ten,
                 SoDanhMuc = taiSanDto.SoDanhMuc,
-                DeTaiId = taiSanDto.DeTaiId,
-                ThietBiId = taiSanDto.ThietBiId,
+                Ten = taiSanDto.Ten,
                 NguyenGia = taiSanDto.NguyenGia,
-                TrangThai = taiSanDto.TrangThai
+                KhauHao = taiSanDto.KhauHao,
+                HaoMon = taiSanDto.HaoMon,
+                GiaTriConLai = taiSanDto.GiaTriConLai,
+                TrangThai = taiSanDto.TrangThai,
+                DeTaiId = taiSanDto.DeTaiId,
+                ThietBiId = taiSanDto.ThietBiId, 
+                NgayCapNhat = taiSanDto.NgayCapNhat 
             };
+
             _context.TaiSans.Add(newTaiSan);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetTaiSan), new { id = newTaiSan.Id }, newTaiSan);
@@ -62,7 +67,9 @@ namespace SciTrack.Api.Controllers
             {
                 return BadRequest();
             }
-            _context.Entry(taiSan).State = EntityState.Modified;
+
+            _context.Entry(taiSan).State = EntityState.Modified; 
+
             try
             {
                 await _context.SaveChangesAsync();

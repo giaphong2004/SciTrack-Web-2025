@@ -42,14 +42,16 @@ namespace SciTrack.Api.Controllers
         {
             var newDeTai = new DeTai
             {
-                Ten = deTaiDto.Ten,
-                MaDeTai = deTaiDto.MaDeTai,
-                DecisionRefs = deTaiDto.DecisionRefs,
-                BudgetExecution = deTaiDto.BudgetExecution,
-                BudgetForTraining = deTaiDto.BudgetForTraining,
-                ConsumablesBudget = deTaiDto.ConsumablesBudget,
-                EquipmentDepreciation = deTaiDto.EquipmentDepreciation,
-                CreatedAt = DateTime.UtcNow
+                // Chỉ gán 8 trường CÓ trong CSDL
+                Ten = deTaiDto.TenDeTai,
+                MaDeTai = deTaiDto.MaSoDeTai,
+                CapNhatTaiSanLanCuoi = deTaiDto.NgayCapNhatTaiSan,
+                QuyetDinhThamChieu = deTaiDto.CacQuyetDinhLienQuan,
+                KinhPhiThucHien = deTaiDto.KinhPhiThucHien,
+                KinhPhiDaoTao = deTaiDto.KinhPhiGiaoKhoaChuyen, 
+                KinhPhiTieuHao = deTaiDto.KinhPhiVatTuTieuHao,
+                KhauHaoThietBi = deTaiDto.HaoMonKhauHaoLienQuan 
+
             };
 
             _context.DeTais.Add(newDeTai);
@@ -65,8 +67,9 @@ namespace SciTrack.Api.Controllers
             {
                 return BadRequest();
             }
-            deTai.UpdatedAt = DateTime.UtcNow;
-            _context.Entry(deTai).State = EntityState.Modified;
+
+            _context.Entry(deTai).State = EntityState.Modified; 
+
             try
             {
                 await _context.SaveChangesAsync();

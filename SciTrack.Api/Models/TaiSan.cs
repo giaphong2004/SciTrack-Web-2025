@@ -14,15 +14,25 @@ namespace SciTrack.Api.Models
         public string? SoDanhMuc { get; set; }
 
         [Column("Name")]
-        public string Ten { get; set; }
+        public string Ten { get; set; } = string.Empty; 
 
         [Column("OriginalValue")]
         public decimal? NguyenGia { get; set; }
 
-        // === DÒNG QUAN TRỌNG ĐÃ ĐƯỢC SỬA LẠI ===
-        [Column("AssetStatus")] // Sửa từ "Status" thành "AssetStatus"
+        [Column("Depreciation")]
+        public decimal? KhauHao { get; set; }
+
+        [Column("Amortization")]
+        public decimal? HaoMon { get; set; }
+
+        [Column("ResidualValue")]
+        public decimal? GiaTriConLai { get; set; }
+
+        [Column("LastUpdated")]
+        public DateTime? NgayCapNhat { get; set; }
+
+        [Column("AssetStatus")]
         public string? TrangThai { get; set; }
-        // =====================================
 
         [Column("ProjectID")]
         public int? DeTaiId { get; set; }
