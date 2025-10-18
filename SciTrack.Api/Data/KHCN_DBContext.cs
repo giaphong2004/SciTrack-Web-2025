@@ -30,7 +30,7 @@ namespace SciTrack.Api.Data
             // thông qua bảng trung gian DTKHCN_CONTRACT
             modelBuilder.Entity<HopDong>()
                 .HasMany(hd => hd.DeTais)
-                .WithMany(dt => dt.HopDongs)
+                .WithMany() 
                 .UsingEntity(j => j.ToTable("DTKHCN_CONTRACT"));
 
             // Cấu hình mối quan hệ Nhiều-Nhiều giữa Hợp đồng và Kết quả Đề tài

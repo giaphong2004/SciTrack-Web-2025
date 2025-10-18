@@ -10,25 +10,37 @@ namespace SciTrack.Api.Models
         [Column("ID")]
         public int Id { get; set; }
 
+        [Column("Name")]
+        public string Ten { get; set; } = string.Empty;
+
         [Column("ProjectCode")]
         public string? MaDeTai { get; set; }
 
-        [Column("ProjectName")]
-        public string TenDeTai { get; set; }
+        [Column("LastAssetUpdate")]
+        public DateTime? LastAssetUpdate { get; set; }
 
-        [Column("StartDate")]
-        public DateTime? NgayBatDau { get; set; }
+        [Column("DecisionRefs")]
+        public string? DecisionRefs { get; set; }
 
-        [Column("EndDate")]
-        public DateTime? NgayKetThuc { get; set; }
+        [Column("BudgetExecution")]
+        public decimal? BudgetExecution { get; set; }
 
-        [Column("TotalBudget")]
-        public decimal? TongKinhPhi { get; set; }
+        [Column("BudgetForTraining")]
+        public decimal? BudgetForTraining { get; set; }
+
+        [Column("ConsumablesBudget")]
+        public decimal? ConsumablesBudget { get; set; }
+
+        [Column("EquipmentDepreciation")]
+        public decimal? EquipmentDepreciation { get; set; }
+
+        [Column("CreatedAt")]
+        public DateTime? CreatedAt { get; set; }
+
+        [Column("UpdatedAt")]
+        public DateTime? UpdatedAt { get; set; }
 
         // Mối quan hệ: Một Đề tài có nhiều Tài sản
         public virtual ICollection<TaiSan> TaiSans { get; set; } = new List<TaiSan>();
-
-        // Mối quan hệ Nhiều-Nhiều với Hợp đồng
-        public virtual ICollection<HopDong> HopDongs { get; set; } = new List<HopDong>();
     }
 }
