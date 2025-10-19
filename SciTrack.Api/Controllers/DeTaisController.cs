@@ -21,19 +21,23 @@ namespace SciTrack.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DeTai>>> GetDeTais()
         {
-            return await _context.DeTais.ToListAsync();
+            return await _context.DeTais.AsNoTracking().ToListAsync();
         }
 
         // GET: api/DeTais/5
         [HttpGet("{id}")]
         public async Task<ActionResult<DeTai>> GetDeTai(int id)
         {
-            var deTai = await _context.DeTais.FindAsync(id);
+            var deTai = await _context.DeTais
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.Id == id);
+
             if (deTai == null)
             {
                 return NotFound();
             }
-            return deTai;
+
+            return Ok(deTai);
         }
 
         // POST: api/DeTais
@@ -42,33 +46,46 @@ namespace SciTrack.Api.Controllers
         {
             var newDeTai = new DeTai
             {
-                // Chỉ gán 8 trường CÓ trong CSDL
-                Ten = deTaiDto.TenDeTai,
+                Ten = deTaiDto.Ten,
                 MaDeTai = deTaiDto.MaSoDeTai,
                 CapNhatTaiSanLanCuoi = deTaiDto.NgayCapNhatTaiSan,
                 QuyetDinhThamChieu = deTaiDto.CacQuyetDinhLienQuan,
                 KinhPhiThucHien = deTaiDto.KinhPhiThucHien,
-                KinhPhiDaoTao = deTaiDto.KinhPhiGiaoKhoaChuyen, 
+                KinhPhiDaoTao = deTaiDto.KinhPhiGiaoKhoaChuyen,
                 KinhPhiTieuHao = deTaiDto.KinhPhiVatTuTieuHao,
-                KhauHaoThietBi = deTaiDto.HaoMonKhauHaoLienQuan 
-
+                KhauHaoThietBi = deTaiDto.HaoMonKhauHaoLienQuan,
+                NgayTao = DateTime.UtcNow,
+                QuyetDinhXuLyTaiSan = deTaiDto.QuyetDinhXuLyTaiSan
             };
 
             _context.DeTais.Add(newDeTai);
             await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetDeTai), new { id = newDeTai.Id }, newDeTai);
         }
 
         // PUT: api/DeTais/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDeTai(int id, DeTai deTai)
+        public async Task<IActionResult> PutDeTai(int id, DeTaiCreateDto deTaiDto)
         {
-            if (id != deTai.Id)
+            var deTai = await _context.DeTais.FindAsync(id);
+            if (deTai == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(deTai).State = EntityState.Modified; 
+            deTai.Ten = deTaiDto.Ten;
+            deTai.MaDeTai = deTaiDto.MaSoDeTai;
+            deTai.CapNhatTaiSanLanCuoi = deTaiDto.NgayCapNhatTaiSan;
+            deTai.QuyetDinhThamChieu = deTaiDto.CacQuyetDinhLienQuan;
+            deTai.KinhPhiThucHien = deTaiDto.KinhPhiThucHien;
+            deTai.KinhPhiDaoTao = deTaiDto.KinhPhiGiaoKhoaChuyen;
+            deTai.KinhPhiTieuHao = deTaiDto.KinhPhiVatTuTieuHao;
+            deTai.KhauHaoThietBi = deTaiDto.HaoMonKhauHaoLienQuan;
+            deTai.NgayCapNhat = DateTime.UtcNow;
+            deTai.QuyetDinhXuLyTaiSan = deTaiDto.QuyetDinhXuLyTaiSan;
+
+            _context.Entry(deTai).State = EntityState.Modified;
 
             try
             {
@@ -85,6 +102,7 @@ namespace SciTrack.Api.Controllers
                     throw;
                 }
             }
+
             return NoContent();
         }
 
@@ -97,8 +115,10 @@ namespace SciTrack.Api.Controllers
             {
                 return NotFound();
             }
+
             _context.DeTais.Remove(deTai);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }

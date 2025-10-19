@@ -14,7 +14,7 @@ namespace SciTrack.Api.Models
         public string? SoDanhMuc { get; set; }
 
         [Column("Name")]
-        public string Ten { get; set; } = string.Empty; 
+        public string Ten { get; set; } = string.Empty;
 
         [Column("OriginalValue")]
         public decimal? NguyenGia { get; set; }
@@ -37,10 +37,6 @@ namespace SciTrack.Api.Models
         [Column("ProjectID")]
         public int? DeTaiId { get; set; }
         public virtual DeTai? DeTai { get; set; }
-
-        [Column("EquipmentID")]
-        public int? ThietBiId { get; set; }
-        public virtual ThietBi? ThietBi { get; set; }
 
         public virtual ICollection<KetQuaDeTai> KetQuaDeTais { get; set; } = new List<KetQuaDeTai>();
     }

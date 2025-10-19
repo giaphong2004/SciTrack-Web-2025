@@ -50,8 +50,7 @@ namespace SciTrack.Api.Controllers
                 GiaTriConLai = taiSanDto.GiaTriConLai,
                 TrangThai = taiSanDto.TrangThai,
                 DeTaiId = taiSanDto.DeTaiId,
-                ThietBiId = taiSanDto.ThietBiId, 
-                NgayCapNhat = taiSanDto.NgayCapNhat 
+                NgayCapNhat = taiSanDto.NgayCapNhat
             };
 
             _context.TaiSans.Add(newTaiSan);
@@ -61,14 +60,25 @@ namespace SciTrack.Api.Controllers
 
         // PUT: api/TaiSans/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTaiSan(int id, TaiSan taiSan)
+        public async Task<IActionResult> PutTaiSan(int id, TaiSanCreateDto taiSanDto) 
         {
-            if (id != taiSan.Id)
+            var taiSan = await _context.TaiSans.FindAsync(id);
+            if (taiSan == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(taiSan).State = EntityState.Modified; 
+            taiSan.SoDanhMuc = taiSanDto.SoDanhMuc;
+            taiSan.Ten = taiSanDto.Ten;
+            taiSan.NguyenGia = taiSanDto.NguyenGia;
+            taiSan.KhauHao = taiSanDto.KhauHao;
+            taiSan.HaoMon = taiSanDto.HaoMon;
+            taiSan.GiaTriConLai = taiSanDto.GiaTriConLai;
+            taiSan.TrangThai = taiSanDto.TrangThai;
+            taiSan.DeTaiId = taiSanDto.DeTaiId;
+            taiSan.NgayCapNhat = taiSanDto.NgayCapNhat; 
+
+            _context.Entry(taiSan).State = EntityState.Modified;
 
             try
             {
