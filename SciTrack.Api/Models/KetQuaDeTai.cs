@@ -10,17 +10,16 @@ namespace SciTrack.Api.Models
         [Column("ID")]
         public int Id { get; set; }
 
-        [Column("ResultName")]
-        public string TenKetQua { get; set; }
+        [Column("Name")]
+        public string Ten { get; set; } = string.Empty;
 
-        [Column("ResultType")]
-        public string? LoaiKetQua { get; set; }
+        // --- Liên kết Một-Nhiều với DeTai (Đã có) ---
+        [Column("ProjectID")]
+        public int? DeTaiId { get; set; }
+        public virtual DeTai? DeTai { get; set; }
 
-        [Column("SubmissionDate")]
-        public DateTime? NgayNop { get; set; }
-
-        // Mối quan hệ Nhiều-Nhiều với Tài sản và Hợp đồng
         public virtual ICollection<TaiSan> TaiSans { get; set; } = new List<TaiSan>();
+
         public virtual ICollection<HopDong> HopDongs { get; set; } = new List<HopDong>();
     }
 }

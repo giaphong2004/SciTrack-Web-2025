@@ -16,31 +16,63 @@ namespace SciTrack.Api.Controllers
         {
             _context = context;
         }
-
-        // GET: api/DeTais
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DeTai>>> GetDeTais()
+        public async Task<ActionResult<IEnumerable<DeTaiViewDto>>> GetDeTais()
         {
-            return await _context.DeTais.AsNoTracking().ToListAsync();
+            var deTais = await _context.DeTais
+                .AsNoTracking()
+                .Select(dt => new DeTaiViewDto
+                {
+                    Id = dt.Id,
+                    Ten = dt.Ten,
+                    MaDeTai = dt.MaDeTai,
+                    CapNhatTaiSanLanCuoi = dt.CapNhatTaiSanLanCuoi,
+                    QuyetDinhThamChieu = dt.QuyetDinhThamChieu,
+                    KinhPhiThucHien = dt.KinhPhiThucHien,
+                    KinhPhiDaoTao = dt.KinhPhiDaoTao,
+                    KinhPhiTieuHao = dt.KinhPhiTieuHao,
+                    KhauHaoThietBi = dt.KhauHaoThietBi,
+                    QuyetDinhXuLyTaiSan = dt.QuyetDinhXuLyTaiSan,
+                    NgayTao = dt.NgayTao,
+                    NgayCapNhat = dt.NgayCapNhat,
+                    KetQuaDeTai = dt.KetQuaDeTais.Select(kq => kq.Ten).FirstOrDefault()
+                })
+                .ToListAsync();
+
+            return Ok(deTais);
         }
 
-        // GET: api/DeTais/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<DeTai>> GetDeTai(int id)
+        public async Task<ActionResult<DeTaiViewDto>> GetDeTai(int id)
         {
-            var deTai = await _context.DeTais
+            var deTaiDto = await _context.DeTais
                 .AsNoTracking()
-                .FirstOrDefaultAsync(d => d.Id == id);
+                .Where(dt => dt.Id == id)
+                .Select(dt => new DeTaiViewDto
+                {.
+                    Id = dt.Id,
+                    Ten = dt.Ten,
+                    MaDeTai = dt.MaDeTai,
+                    CapNhatTaiSanLanCuoi = dt.CapNhatTaiSanLanCuoi,
+                    QuyetDinhThamChieu = dt.QuyetDinhThamChieu,
+                    KinhPhiThucHien = dt.KinhPhiThucHien,
+                    KinhPhiDaoTao = dt.KinhPhiDaoTao,
+                    KinhPhiTieuHao = dt.KinhPhiTieuHao,
+                    KhauHaoThietBi = dt.KhauHaoThietBi,
+                    QuyetDinhXuLyTaiSan = dt.QuyetDinhXuLyTaiSan,
+                    NgayTao = dt.NgayTao,
+                    NgayCapNhat = dt.NgayCapNhat,
+                    KetQuaDeTai = dt.KetQuaDeTais.Select(kq => kq.Ten).FirstOrDefault()
+                })
+                .FirstOrDefaultAsync();
 
-            if (deTai == null)
+            if (deTaiDto == null)
             {
                 return NotFound();
             }
-
-            return Ok(deTai);
+            return Ok(deTaiDto);
         }
 
-        // POST: api/DeTais
         [HttpPost]
         public async Task<ActionResult<DeTai>> PostDeTai(DeTaiCreateDto deTaiDto)
         {
@@ -57,22 +89,27 @@ namespace SciTrack.Api.Controllers
                 NgayTao = DateTime.UtcNow,
                 QuyetDinhXuLyTaiSan = deTaiDto.QuyetDinhXuLyTaiSan
             };
-
             _context.DeTais.Add(newDeTai);
+            if (!string.IsNullOrEmpty(deTaiDto.KetQuaDeTai))
+            {
+                var newKetQuaDeTai = new KetQuaDeTai
+                {
+                    Ten = deTaiDto.KetQuaDeTai,
+                    DeTai = newDeTai 
+                };
+                _context.KetQuaDeTais.Add(newKetQuaDeTai);
+            }
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetDeTai), new { id = newDeTai.Id }, newDeTai);
         }
 
-        // PUT: api/DeTais/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDeTai(int id, DeTaiCreateDto deTaiDto)
         {
             var deTai = await _context.DeTais.FindAsync(id);
-            if (deTai == null)
-            {
-                return NotFound();
-            }
+            if (deTai == null) { return NotFound(); }
 
             deTai.Ten = deTaiDto.Ten;
             deTai.MaDeTai = deTaiDto.MaSoDeTai;
@@ -85,7 +122,20 @@ namespace SciTrack.Api.Controllers
             deTai.NgayCapNhat = DateTime.UtcNow;
             deTai.QuyetDinhXuLyTaiSan = deTaiDto.QuyetDinhXuLyTaiSan;
 
-            _context.Entry(deTai).State = EntityState.Modified;
+            var ketQua = await _context.KetQuaDeTais.FirstOrDefaultAsync(kq => kq.DeTaiId == id);
+            if (ketQua != null)
+            {
+                ketQua.Ten = deTaiDto.KetQuaDeTai;
+                _context.Entry(ketQua).State = EntityState.Modified;
+            }
+            else if (!string.IsNullOrEmpty(deTaiDto.KetQuaDeTai))
+            {
+                _context.KetQuaDeTais.Add(new KetQuaDeTai
+                {
+                    Ten = deTaiDto.KetQuaDeTai,
+                    DeTaiId = id
+                });
+            }
 
             try
             {
@@ -93,32 +143,20 @@ namespace SciTrack.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.DeTais.Any(e => e.Id == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                if (!_context.DeTais.Any(e => e.Id == id)) { return NotFound(); } else { throw; }
             }
-
             return NoContent();
         }
 
-        // DELETE: api/DeTais/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDeTai(int id)
         {
             var deTai = await _context.DeTais.FindAsync(id);
-            if (deTai == null)
-            {
-                return NotFound();
-            }
-
+            if (deTai == null) { return NotFound(); }
             _context.DeTais.Remove(deTai);
+            var ketQuas = await _context.KetQuaDeTais.Where(kq => kq.DeTaiId == id).ToListAsync();
+            _context.KetQuaDeTais.RemoveRange(ketQuas);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

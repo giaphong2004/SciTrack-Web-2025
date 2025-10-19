@@ -44,5 +44,9 @@ namespace SciTrack.Api.Models
         public string? QuyetDinhXuLyTaiSan { get; set; }
 
         public virtual ICollection<TaiSan> TaiSans { get; set; } = new List<TaiSan>();
+
+        // --- BỔ SUNG DÒNG NÀY ĐỂ TẠO LIÊN KẾT ---
+        public virtual ICollection<KetQuaDeTai> KetQuaDeTais { get; set; } = new List<KetQuaDeTai>();
+        // ----------------------------------------
     }
 }
