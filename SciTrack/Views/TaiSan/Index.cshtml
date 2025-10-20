@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<SciTrack.web.Models.TaiSan>
+@{
     ViewData["Title"] = "Tài sản KH&CN";
 }
 
@@ -6,7 +7,16 @@
     <!-- NỘI DUNG CHÍNH -->
     <div class="flex-fill p-4">
         <h5 class="fw-bold text-primary">Phần mềm quản lý KHCN — Giao diện xanh dương</h5>
-        <h6 class="fw-bold mb-3">TSKH&CN — Tài sản KH&CN</h6>
+        <h6 class="fw-bold mb-3">TSKHCN — Tài sản KHCN</h6>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>⚠️ Lỗi:</strong> @ViewBag.Error
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-body">
                 <div class="row">
@@ -69,17 +79,39 @@
 
                     <!-- Danh sách tài sản bên phải -->
                     <div class="col-md-5">
-                        <h6 class="fw-bold mb-3">Danh sách tài sản</h6>
-                        <div class="table-responsive">
-                            <table class="table table-bordered align-middle">
-                                <thead class="table-light">
+                        <h6 class="fw-bold mb-3">Danh sách tài sản (@Model.Count)</h6>
+                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                            <table class="table table-bordered table-hover align-middle">
+                                <thead class="table-light sticky-top">
                                     <tr>
                                         <th>Mã</th>
                                         <th>Tên</th>
                                         <th>Trạng thái</th>
                                     </tr>
                                 </thead>
-                               
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        @foreach (var ts in Model)
+                                        {
+                                            <tr style="cursor: pointer;">
+                                                <td>@ts.SoDanhMuc</td>
+                                                <td>@ts.Ten</td>
+                                                <td>
+                                                    <span class="badge bg-info">@ts.TrangThaiTaiSan</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted">
+                                                Không có dữ liệu
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
                             </table>
                         </div>
                         <small class="text-muted">Click hàng để chỉnh sửa / in / xóa</small>
