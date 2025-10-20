@@ -10,43 +10,42 @@ namespace SciTrack.Api.Models
         [Column("ID")]
         public int Id { get; set; }
 
-        [Column("Name")]
-        public string Ten { get; set; } = string.Empty;
+        [Required]
+        [Column("TenDTKHCN")]
+        public string TenDTKHCN { get; set; } = string.Empty;
 
-        [Column("ProjectCode")]
-        public string? MaDeTai { get; set; }
+        [Column("NgayCapNhatTaiSan")]
+        public DateTime? NgayCapNhatTaiSan { get; set; }
 
-        [Column("LastAssetUpdate")]
-        public DateTime? CapNhatTaiSanLanCuoi { get; set; }
+        [Column("CacQuyetDinh")]
+        public string? CacQuyetDinh { get; set; }
 
-        [Column("DecisionRefs")]
-        public string? QuyetDinhThamChieu { get; set; }
+        [Column("QuyetDinhXuLy")]
+        public string? QuyetDinhXuLy { get; set; }
 
-        [Column("BudgetExecution")]
+        [Column("KinhPhiThucHien")]
         public decimal? KinhPhiThucHien { get; set; }
 
-        [Column("BudgetForTraining")]
-        public decimal? KinhPhiDaoTao { get; set; }
+        [Column("KinhPhiGiaoKhoanChuyen")]
+        public decimal? KinhPhiGiaoKhoanChuyen { get; set; }
 
-        [Column("ConsumablesBudget")]
-        public decimal? KinhPhiTieuHao { get; set; }
+        [Column("KinhPhiVatTuTieuHao")]
+        public decimal? KinhPhiVatTuTieuHao { get; set; }
 
-        [Column("EquipmentDepreciation")]
-        public decimal? KhauHaoThietBi { get; set; }
+        [Column("HaoMonLienQuan")]
+        public decimal? HaoMonLienQuan { get; set; }
 
-        [Column("CreatedAt")]
-        public DateTime? NgayTao { get; set; }
+        // Foreign key to KQDT
+        [Column("KetQuaDeTai")]
+        public int? KetQuaDeTai { get; set; }
+        
+        [ForeignKey("KetQuaDeTai")]
+        public virtual KetQuaDeTai? KetQua { get; set; }
 
-        [Column("UpdatedAt")]
-        public DateTime? NgayCapNhat { get; set; }
+        [Column("MaSoKetQua")]
+        public int? MaSoKetQua { get; set; }
 
-        [Column("AssetDisposalDecision")]
-        public string? QuyetDinhXuLyTaiSan { get; set; }
-
+        // Mối quan hệ: Một Đề tài có nhiều Tài sản
         public virtual ICollection<TaiSan> TaiSans { get; set; } = new List<TaiSan>();
-
-        // --- BỔ SUNG DÒNG NÀY ĐỂ TẠO LIÊN KẾT ---
-        public virtual ICollection<KetQuaDeTai> KetQuaDeTais { get; set; } = new List<KetQuaDeTai>();
-        // ----------------------------------------
     }
 }

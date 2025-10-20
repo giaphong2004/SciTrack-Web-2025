@@ -16,126 +16,165 @@ namespace SciTrack.Api.Controllers
         {
             _context = context;
         }
+
+        /// <summary>
+        /// GET: api/DeTais - Lấy danh sách tất cả đề tài
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DeTaiViewDto>>> GetDeTais()
         {
             var deTais = await _context.DeTais
+                .Include(dt => dt.KetQua)
                 .AsNoTracking()
                 .Select(dt => new DeTaiViewDto
                 {
-                    Id = dt.Id,
-                    Ten = dt.Ten,
-                    MaDeTai = dt.MaDeTai,
-                    CapNhatTaiSanLanCuoi = dt.CapNhatTaiSanLanCuoi,
-                    QuyetDinhThamChieu = dt.QuyetDinhThamChieu,
+                    MaDeTai = dt.Id.ToString(), // Mã đề tài = ID
+                    Ten = dt.TenDTKHCN,
+                    CapNhatTaiSanLanCuoi = dt.NgayCapNhatTaiSan,
+                    QuyetDinhThamChieu = dt.CacQuyetDinh,
                     KinhPhiThucHien = dt.KinhPhiThucHien,
-                    KinhPhiDaoTao = dt.KinhPhiDaoTao,
-                    KinhPhiTieuHao = dt.KinhPhiTieuHao,
-                    KhauHaoThietBi = dt.KhauHaoThietBi,
-                    QuyetDinhXuLyTaiSan = dt.QuyetDinhXuLyTaiSan,
-                    NgayTao = dt.NgayTao,
-                    NgayCapNhat = dt.NgayCapNhat,
-                    KetQuaDeTai = dt.KetQuaDeTais.Select(kq => kq.Ten).FirstOrDefault()
+                    KinhPhiDaoTao = dt.KinhPhiGiaoKhoanChuyen,
+                    KinhPhiTieuHao = dt.KinhPhiVatTuTieuHao,
+                    KhauHaoThietBi = dt.HaoMonLienQuan,
+                    QuyetDinhXuLyTaiSan = dt.QuyetDinhXuLy,
+                    KetQuaDeTai = dt.KetQua != null ? dt.KetQua.TenKetQua : null
                 })
                 .ToListAsync();
 
             return Ok(deTais);
         }
 
+        /// <summary>
+        /// GET: api/DeTais/5 - Lấy chi tiết một đề tài theo ID
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<DeTaiViewDto>> GetDeTai(int id)
         {
             var deTaiDto = await _context.DeTais
+                .Include(dt => dt.KetQua)
                 .AsNoTracking()
                 .Where(dt => dt.Id == id)
                 .Select(dt => new DeTaiViewDto
-                {.
-                    Id = dt.Id,
-                    Ten = dt.Ten,
-                    MaDeTai = dt.MaDeTai,
-                    CapNhatTaiSanLanCuoi = dt.CapNhatTaiSanLanCuoi,
-                    QuyetDinhThamChieu = dt.QuyetDinhThamChieu,
+                {
+                    MaDeTai = dt.Id.ToString(), // Mã đề tài = ID
+                    Ten = dt.TenDTKHCN,
+                    CapNhatTaiSanLanCuoi = dt.NgayCapNhatTaiSan,
+                    QuyetDinhThamChieu = dt.CacQuyetDinh,
                     KinhPhiThucHien = dt.KinhPhiThucHien,
-                    KinhPhiDaoTao = dt.KinhPhiDaoTao,
-                    KinhPhiTieuHao = dt.KinhPhiTieuHao,
-                    KhauHaoThietBi = dt.KhauHaoThietBi,
-                    QuyetDinhXuLyTaiSan = dt.QuyetDinhXuLyTaiSan,
-                    NgayTao = dt.NgayTao,
-                    NgayCapNhat = dt.NgayCapNhat,
-                    KetQuaDeTai = dt.KetQuaDeTais.Select(kq => kq.Ten).FirstOrDefault()
+                    KinhPhiDaoTao = dt.KinhPhiGiaoKhoanChuyen,
+                    KinhPhiTieuHao = dt.KinhPhiVatTuTieuHao,
+                    KhauHaoThietBi = dt.HaoMonLienQuan,
+                    QuyetDinhXuLyTaiSan = dt.QuyetDinhXuLy,
+                    KetQuaDeTai = dt.KetQua != null ? dt.KetQua.TenKetQua : null
                 })
                 .FirstOrDefaultAsync();
 
             if (deTaiDto == null)
             {
-                return NotFound();
+                return NotFound(new { message = $"Không tìm thấy đề tài với ID = {id}" });
             }
+            
             return Ok(deTaiDto);
         }
 
+        /// <summary>
+        /// POST: api/DeTais - Tạo mới một đề tài
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<DeTai>> PostDeTai(DeTaiCreateDto deTaiDto)
         {
-            var newDeTai = new DeTai
-            {
-                Ten = deTaiDto.Ten,
-                MaDeTai = deTaiDto.MaSoDeTai,
-                CapNhatTaiSanLanCuoi = deTaiDto.NgayCapNhatTaiSan,
-                QuyetDinhThamChieu = deTaiDto.CacQuyetDinhLienQuan,
-                KinhPhiThucHien = deTaiDto.KinhPhiThucHien,
-                KinhPhiDaoTao = deTaiDto.KinhPhiGiaoKhoaChuyen,
-                KinhPhiTieuHao = deTaiDto.KinhPhiVatTuTieuHao,
-                KhauHaoThietBi = deTaiDto.HaoMonKhauHaoLienQuan,
-                NgayTao = DateTime.UtcNow,
-                QuyetDinhXuLyTaiSan = deTaiDto.QuyetDinhXuLyTaiSan
-            };
-            _context.DeTais.Add(newDeTai);
+            // Bước 1: Tìm hoặc tạo mới KetQuaDeTai nếu có
+            KetQuaDeTai? ketQua = null;
             if (!string.IsNullOrEmpty(deTaiDto.KetQuaDeTai))
             {
-                var newKetQuaDeTai = new KetQuaDeTai
+                // Tìm kết quả đề tài đã tồn tại
+                ketQua = await _context.KetQuaDeTais
+                    .FirstOrDefaultAsync(kq => kq.TenKetQua == deTaiDto.KetQuaDeTai);
+
+                // Nếu chưa có thì tạo mới
+                if (ketQua == null)
                 {
-                    Ten = deTaiDto.KetQuaDeTai,
-                    DeTai = newDeTai 
-                };
-                _context.KetQuaDeTais.Add(newKetQuaDeTai);
+                    ketQua = new KetQuaDeTai
+                    {
+                        TenKetQua = deTaiDto.KetQuaDeTai,
+                        NgayCapNhatTaiSan = deTaiDto.NgayCapNhatTaiSan
+                    };
+                    _context.KetQuaDeTais.Add(ketQua);
+                    await _context.SaveChangesAsync(); // Lưu để lấy ID
+                }
             }
 
+            // Bước 2: Tạo đề tài mới
+            var newDeTai = new DeTai
+            {
+                TenDTKHCN = deTaiDto.Ten,
+                NgayCapNhatTaiSan = deTaiDto.NgayCapNhatTaiSan,
+                CacQuyetDinh = deTaiDto.CacQuyetDinhLienQuan,
+                KinhPhiThucHien = deTaiDto.KinhPhiThucHien,
+                KinhPhiGiaoKhoanChuyen = deTaiDto.KinhPhiGiaoKhoaChuyen,
+                KinhPhiVatTuTieuHao = deTaiDto.KinhPhiVatTuTieuHao,
+                HaoMonLienQuan = deTaiDto.HaoMonKhauHaoLienQuan,
+                QuyetDinhXuLy = deTaiDto.QuyetDinhXuLyTaiSan,
+                KetQuaDeTai = ketQua?.Id,     // Foreign key đến bảng KQDT
+                MaSoKetQua = ketQua?.Id        // Tham chiếu ID kết quả
+            };
+
+            _context.DeTais.Add(newDeTai);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetDeTai), new { id = newDeTai.Id }, newDeTai);
+            // Bước 3: Trả về response với thông tin đề tài vừa tạo
+            return CreatedAtAction(
+                nameof(GetDeTai), 
+                new { id = newDeTai.Id }, 
+                new 
+                {
+                    maDeTai = newDeTai.Id.ToString(),
+                    ten = newDeTai.TenDTKHCN,
+                    ketQuaDeTai = ketQua?.TenKetQua,
+                    message = "Tạo đề tài thành công"
+                }
+            );
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDeTai(int id, DeTaiCreateDto deTaiDto)
         {
             var deTai = await _context.DeTais.FindAsync(id);
-            if (deTai == null) { return NotFound(); }
-
-            deTai.Ten = deTaiDto.Ten;
-            deTai.MaDeTai = deTaiDto.MaSoDeTai;
-            deTai.CapNhatTaiSanLanCuoi = deTaiDto.NgayCapNhatTaiSan;
-            deTai.QuyetDinhThamChieu = deTaiDto.CacQuyetDinhLienQuan;
-            deTai.KinhPhiThucHien = deTaiDto.KinhPhiThucHien;
-            deTai.KinhPhiDaoTao = deTaiDto.KinhPhiGiaoKhoaChuyen;
-            deTai.KinhPhiTieuHao = deTaiDto.KinhPhiVatTuTieuHao;
-            deTai.KhauHaoThietBi = deTaiDto.HaoMonKhauHaoLienQuan;
-            deTai.NgayCapNhat = DateTime.UtcNow;
-            deTai.QuyetDinhXuLyTaiSan = deTaiDto.QuyetDinhXuLyTaiSan;
-
-            var ketQua = await _context.KetQuaDeTais.FirstOrDefaultAsync(kq => kq.DeTaiId == id);
-            if (ketQua != null)
-            {
-                ketQua.Ten = deTaiDto.KetQuaDeTai;
-                _context.Entry(ketQua).State = EntityState.Modified;
+            if (deTai == null) 
+            { 
+                return NotFound(new { message = $"Không tìm thấy đề tài với ID = {id}" });
             }
-            else if (!string.IsNullOrEmpty(deTaiDto.KetQuaDeTai))
+
+            // Tìm hoặc tạo mới KetQuaDeTai
+            KetQuaDeTai? ketQua = null;
+            if (!string.IsNullOrEmpty(deTaiDto.KetQuaDeTai))
             {
-                _context.KetQuaDeTais.Add(new KetQuaDeTai
+                ketQua = await _context.KetQuaDeTais
+                    .FirstOrDefaultAsync(kq => kq.TenKetQua == deTaiDto.KetQuaDeTai);
+
+                if (ketQua == null)
                 {
-                    Ten = deTaiDto.KetQuaDeTai,
-                    DeTaiId = id
-                });
+                    ketQua = new KetQuaDeTai
+                    {
+                        TenKetQua = deTaiDto.KetQuaDeTai,
+                        NgayCapNhatTaiSan = deTaiDto.NgayCapNhatTaiSan
+                    };
+                    _context.KetQuaDeTais.Add(ketQua);
+                    await _context.SaveChangesAsync();
+                }
             }
+
+            // Cập nhật thông tin đề tài
+            deTai.TenDTKHCN = deTaiDto.Ten;
+            deTai.NgayCapNhatTaiSan = deTaiDto.NgayCapNhatTaiSan;
+            deTai.CacQuyetDinh = deTaiDto.CacQuyetDinhLienQuan;
+            deTai.KinhPhiThucHien = deTaiDto.KinhPhiThucHien;
+            deTai.KinhPhiGiaoKhoanChuyen = deTaiDto.KinhPhiGiaoKhoaChuyen;
+            deTai.KinhPhiVatTuTieuHao = deTaiDto.KinhPhiVatTuTieuHao;
+            deTai.HaoMonLienQuan = deTaiDto.HaoMonKhauHaoLienQuan;
+            deTai.QuyetDinhXuLy = deTaiDto.QuyetDinhXuLyTaiSan;
+            deTai.KetQuaDeTai = ketQua?.Id;
+            deTai.MaSoKetQua = ketQua?.Id;
 
             try
             {
@@ -143,8 +182,16 @@ namespace SciTrack.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.DeTais.Any(e => e.Id == id)) { return NotFound(); } else { throw; }
+                if (!_context.DeTais.Any(e => e.Id == id)) 
+                { 
+                    return NotFound(new { message = $"Không tìm thấy đề tài với ID = {id}" });
+                } 
+                else 
+                { 
+                    throw; 
+                }
             }
+            
             return NoContent();
         }
 
@@ -152,12 +199,15 @@ namespace SciTrack.Api.Controllers
         public async Task<IActionResult> DeleteDeTai(int id)
         {
             var deTai = await _context.DeTais.FindAsync(id);
-            if (deTai == null) { return NotFound(); }
+            if (deTai == null) 
+            { 
+                return NotFound(new { message = $"Không tìm thấy đề tài với ID = {id}" });
+            }
+
             _context.DeTais.Remove(deTai);
-            var ketQuas = await _context.KetQuaDeTais.Where(kq => kq.DeTaiId == id).ToListAsync();
-            _context.KetQuaDeTais.RemoveRange(ketQuas);
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            return Ok(new { message = "Xóa đề tài thành công" });
         }
     }
 }

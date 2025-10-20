@@ -10,21 +10,36 @@ namespace SciTrack.Api.Models
         [Column("ID")]
         public int Id { get; set; }
 
-        [Column("EquipmentCode")]
-        public string? MaThietBi { get; set; }
+        [Required]
+        [Column("TenThietBi")]
+        public string TenThietBi { get; set; } = string.Empty;
 
-        [Column("EquipmentName")]
-        public string TenThietBi { get; set; }
+        [Column("NgayDuaVaoSuDung")]
+        public DateTime? NgayDuaVaoSuDung { get; set; }
 
-        [Column("OriginalValue")]
+        [Column("NguyenGia")]
         public decimal? NguyenGia { get; set; }
 
-        [Column("Status")]
-        public string? TrangThai { get; set; }
+        [Column("KhauHao")]
+        public decimal? KhauHao { get; set; }
 
-        // Khóa ngoại đến Hợp đồng
-        [Column("Contract_ID")]
-        public int? HopDongId { get; set; }
+        [Column("GiaTriConLai")]
+        public decimal? GiaTriConLai { get; set; }
+
+        [Column("DT_HD_KHCN_LienQuan")]
+        public string? DT_HD_KHCN_LienQuan { get; set; }
+
+        [Column("NhatKySuDung")]
+        public string? NhatKySuDung { get; set; }
+
+        [Column("TinhTrangThietBi")]
+        public string? TinhTrangThietBi { get; set; }
+
+        // Foreign key to HDKHCN
+        [Column("MaSoHopDong")]
+        public int? MaSoHopDong { get; set; }
+        
+        [ForeignKey("MaSoHopDong")]
         public virtual HopDong? HopDong { get; set; }
     }
 }

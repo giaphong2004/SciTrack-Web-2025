@@ -10,16 +10,33 @@ namespace SciTrack.Api.Models
         [Column("ID")]
         public int Id { get; set; }
 
-        [Column("Name")]
-        public string Ten { get; set; } = string.Empty;
+        [Required]
+        [Column("TenKetQua")]
+        public string TenKetQua { get; set; } = string.Empty;
 
-        // --- Liên kết Một-Nhiều với DeTai (Đã có) ---
-        [Column("ProjectID")]
-        public int? DeTaiId { get; set; }
-        public virtual DeTai? DeTai { get; set; }
+        [Column("PhanLoai")]
+        public string? PhanLoai { get; set; }
 
-        public virtual ICollection<TaiSan> TaiSans { get; set; } = new List<TaiSan>();
+        [Column("DinhGia")]
+        public decimal? DinhGia { get; set; }
 
-        public virtual ICollection<HopDong> HopDongs { get; set; } = new List<HopDong>();
+        [Column("GiaTriConLai")]
+        public decimal? GiaTriConLai { get; set; }
+
+        [Column("CacHopDong")]
+        public string? CacHopDong { get; set; }
+
+        [Column("NgayCapNhatTaiSan")]
+        public DateTime? NgayCapNhatTaiSan { get; set; }
+
+        // Foreign key to HDKHCN
+        [Column("MaSoThietBi")]
+        public int? MaSoThietBi { get; set; }
+        
+        [ForeignKey("MaSoThietBi")]
+        public virtual HopDong? HopDong { get; set; }
+
+        // Mối quan hệ: Một Kết quả có nhiều Đề tài
+        public virtual ICollection<DeTai> DeTais { get; set; } = new List<DeTai>();
     }
 }

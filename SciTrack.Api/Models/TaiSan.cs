@@ -10,34 +10,36 @@ namespace SciTrack.Api.Models
         [Column("ID")]
         public int Id { get; set; }
 
-        [Column("AssetCode")]
-        public string? SoDanhMuc { get; set; }
-
-        [Column("Name")]
+        [Required]
+        [Column("Ten")]
         public string Ten { get; set; } = string.Empty;
 
-        [Column("OriginalValue")]
+        [Column("NguyenGia")]
         public decimal? NguyenGia { get; set; }
 
-        [Column("Depreciation")]
+        [Column("KhauHao")]
         public decimal? KhauHao { get; set; }
 
-        [Column("Amortization")]
+        [Column("HaoMon")]
         public decimal? HaoMon { get; set; }
 
-        [Column("ResidualValue")]
+        [Column("GiaTriConLai")]
         public decimal? GiaTriConLai { get; set; }
 
-        [Column("LastUpdated")]
+        [Column("TrangThaiTaiSan")]
+        public string? TrangThaiTaiSan { get; set; }
+
+        [Column("NgayCapNhat")]
         public DateTime? NgayCapNhat { get; set; }
 
-        [Column("AssetStatus")]
-        public string? TrangThai { get; set; }
-
-        [Column("ProjectID")]
-        public int? DeTaiId { get; set; }
+        // Foreign key to DTKHCN
+        [Column("MaSoDeTaiKHCN")]
+        public int? MaSoDeTaiKHCN { get; set; }
+        
+        [ForeignKey("MaSoDeTaiKHCN")]
         public virtual DeTai? DeTai { get; set; }
 
-        public virtual ICollection<KetQuaDeTai> KetQuaDeTais { get; set; } = new List<KetQuaDeTai>();
+        [Column("MaSoDeTaiKHCN2")]
+        public int? MaSoDeTaiKHCN2 { get; set; }
     }
 }

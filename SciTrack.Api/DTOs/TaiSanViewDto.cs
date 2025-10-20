@@ -1,29 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SciTrack.Api.DTOs
+﻿namespace SciTrack.Api.DTOs
 {
     /// <summary>
-    /// DTO dùng để tạo/cập nhật tài sản (INPUT)
+    /// DTO dùng để trả về thông tin tài sản (OUTPUT)
     /// </summary>
-    public class TaiSanCreateDto
+    public class TaiSanViewDto
     {
-        [Required(ErrorMessage = "Tên tài sản là bắt buộc")]
+        public string SoDanhMuc { get; set; } = string.Empty;
         public string Ten { get; set; } = string.Empty;
-
-        public string? SoDanhMuc { get; set; }
-
         public decimal? NguyenGia { get; set; }
-
         public decimal? KhauHao { get; set; }
-
         public decimal? HaoMon { get; set; }
-
         public decimal? GiaTriConLai { get; set; }
-
         public string? TrangThaiTaiSan { get; set; }
-
         public DateTime? NgayCapNhat { get; set; }
-
-        public int? MaDeTaiKHCN { get; set; }  // ID của đề tài
+        public string? MaDeTaiKHCN { get; set; }  // Mã đề tài (ID)
     }
 }
