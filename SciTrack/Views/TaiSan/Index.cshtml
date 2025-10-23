@@ -2,82 +2,78 @@
 @{
     ViewData["Title"] = "Tài sản KH&CN";
 }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+    <div class="container-fluid py-4">
 
-<div class="d-flex" style="min-height: 100vh; background-color: #f8fafc;">
-    <!-- NỘI DUNG CHÍNH -->
-    <div class="flex-fill p-4">
-        <h5 class="fw-bold text-primary">Phần mềm quản lý KHCN — Giao diện xanh dương</h5>
-        <h6 class="fw-bold mb-3">TSKHCN — Tài sản KHCN</h6>
-
+        <h4 class="fw-bold text-primary mb-4">Phần mềm quản lý KHCN — Tài sản KH&CN</h4>
+        <h6 class="fw-bold mb-3">TSKHCN - Tài sản KHCN</h6>
         @if (ViewBag.Error != null)
         {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>⚠️ Lỗi:</strong> @ViewBag.Error
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <div class="alert alert-danger">@ViewBag.Error</div>
         }
 
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-body">
                 <div class="row">
-                    <!-- Form bên trái -->
+                    <!-- Form nhập -->
                     <div class="col-md-7">
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold">Số danh mục (ĐI1.1)</label>
-                                <input type="text" class="form-control" />
+                                <input id="soDanhMuc" type="text" class="form-control" />
                             </div>
-
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold">Tên (ĐI1.2)</label>
-                                <input type="text" class="form-control" placeholder="Nhập tên tài sản" />
+                                <input id="ten" type="text" class="form-control" placeholder="Nhập tên tài sản" />
                             </div>
-
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Nguyên giá (ĐI1.3)</label>
-                                <input type="text" class="form-control" />
+                                <input id="nguyenGia" type="number" class="form-control" />
                             </div>
-
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Khấu hao (ĐI1.4)</label>
-                                <input type="text" class="form-control" />
+                                <input id="khauHao" type="number" class="form-control" />
                             </div>
-
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Hao mòn (ĐI1.5)</label>
-                                <input type="text" class="form-control" />
+                                <input id="haoMon" type="number" class="form-control" />
                             </div>
-
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Giá trị còn lại (ĐI1.6)</label>
-                                <input type="text" class="form-control" />
+                                <input id="giaTriConLai" type="number" class="form-control" />
                             </div>
-
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold">Trạng thái tài sản (ĐI1.7)</label>
-                                <input type="text" class="form-control" />
+                                <input id="trangThaiTaiSan" type="text" class="form-control" />
                             </div>
-
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold">Ngày cập nhật (ĐI1.8)</label>
-                                <input type="date" class="form-control" />
+                                <input id="ngayCapNhat" type="date" class="form-control" />
                             </div>
-
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold">Mã số đề tài KH&CN (ĐI1.9)</label>
-                                <input type="text" class="form-control" />
+                                <input id="maDeTaiKHCN" type="text" class="form-control" />
                             </div>
                         </div>
 
                         <div class="mt-4 d-flex gap-2">
-                            <button class="btn btn-success">Thêm mới</button>
-                            <button class="btn btn-primary">Lưu</button>
-                            <button class="btn btn-danger">Xóa</button>
-                            <button class="btn btn-secondary">Đóng</button>
+                            <button type="button" class="btn btn-success" onclick="themTaiSan()">Thêm mới</button>
+                            <button type="button" class="btn btn-primary" onclick="suaTaiSan()">Sửa</button>
+                            <button type="button" class="btn btn-danger" onclick="xoaTaiSan()">Xóa</button>
+                            <button type="button" class="btn btn-success">In</button>
+                            <button type="button" class="btn btn-secondary" onclick="location.reload()">Đóng</button>
                         </div>
                     </div>
 
-                    <!-- Danh sách tài sản bên phải -->
+                    <!-- Danh sách -->
                     <div class="col-md-5">
                         <h6 class="fw-bold mb-3">Danh sách tài sản (@Model.Count)</h6>
                         <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
@@ -94,30 +90,196 @@
                                     {
                                         @foreach (var ts in Model)
                                         {
-                                            <tr style="cursor: pointer;">
+                                            
+                                    
+                                    
+                                            <tr style="cursor:pointer"
+                                                onclick="chonTaiSan(
+                                                '@ts.SoDanhMuc',
+                                                '@ts.Ten',
+                                                '@ts.NguyenGia',
+                                                '@ts.KhauHao',
+                                                '@ts.HaoMon',
+                                                '@ts.GiaTriConLai',
+                                                '@ts.TrangThaiTaiSan',
+                                                '@(ts.NgayCapNhat?.ToString("yyyy-MM-dd"))',
+                                                '@ts.MaDeTaiKHCN'
+                                            )">
+
                                                 <td>@ts.SoDanhMuc</td>
                                                 <td>@ts.Ten</td>
-                                                <td>
-                                                    <span class="badge bg-info">@ts.TrangThaiTaiSan</span>
-                                                </td>
+                                                <td><span class="badge bg-info">@ts.TrangThaiTaiSan</span></td>
                                             </tr>
                                         }
+
                                     }
                                     else
                                     {
                                         <tr>
-                                            <td colspan="3" class="text-center text-muted">
-                                                Không có dữ liệu
-                                            </td>
+                                            <td colspan="3" class="text-center text-muted">Không có dữ liệu</td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
-                        <small class="text-muted">Click hàng để chỉnh sửa / in / xóa</small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- JS gọi API -->
+    <script>
+        async function themTaiSan() {
+            try {
+                // 🟦 1️⃣ Gọi API để lấy danh sách hiện tại
+                const resList = await fetch("https://localhost:7147/api/TaiSans");
+                const list = await resList.json();
+
+                // 🟩 2️⃣ Tìm số danh mục lớn nhất
+                let maxSoDanhMuc = 0;
+                list.forEach(x => {
+                    const so = parseInt(x.soDanhMuc);
+                    if (!isNaN(so) && so > maxSoDanhMuc) maxSoDanhMuc = so;
+                });
+
+                // 🟨 3️⃣ Gán số danh mục kế tiếp vào form
+                const nextSoDanhMuc = maxSoDanhMuc + 1;
+                document.getElementById("soDanhMuc").value = nextSoDanhMuc;
+
+                // 🟧 4️⃣ Lấy dữ liệu từ form
+                const taiSan = {
+                    soDanhMuc: nextSoDanhMuc.toString(),
+                    ten: document.getElementById("ten").value,
+                    nguyenGia: parseFloat(document.getElementById("nguyenGia").value) || 0,
+                    khauHao: parseFloat(document.getElementById("khauHao").value) || 0,
+                    haoMon: parseFloat(document.getElementById("haoMon").value) || 0,
+                    giaTriConLai: parseFloat(document.getElementById("giaTriConLai").value) || 0,
+                    trangThaiTaiSan: document.getElementById("trangThaiTaiSan").value,
+                    ngayCapNhat: document.getElementById("ngayCapNhat").value,
+                    maDeTaiKHCN: document.getElementById("maDeTaiKHCN").value
+                };
+
+                // 🟥 5️⃣ Gửi yêu cầu thêm tài sản
+                const res = await fetch("https://localhost:7147/api/TaiSans", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(taiSan)
+                });
+
+                if (res.ok) {
+                    alert("✅ Thêm tài sản thành công!");
+                    location.reload();
+                } else {
+                    const err = await res.text();
+                    alert("❌ Lỗi: " + res.status + " - " + err);
+                }
+            } catch (e) {
+                alert("⚠️ Không thể kết nối API: " + e.message);
+            }
+        }
+    </script>
+
+    </script>
+    <script>
+        function chonTaiSan(soDanhMuc, ten, nguyenGia, khauHao, haoMon, giaTriConLai, trangThaiTaiSan, ngayCapNhat, maDeTaiKHCN) {
+            // Gán dữ liệu vào form
+            document.getElementById("soDanhMuc").value = soDanhMuc || "";
+            document.getElementById("ten").value = ten || "";
+            document.getElementById("nguyenGia").value = nguyenGia || "";
+            document.getElementById("khauHao").value = khauHao || "";
+            document.getElementById("haoMon").value = haoMon || "";
+            document.getElementById("giaTriConLai").value = giaTriConLai || "";
+            document.getElementById("trangThaiTaiSan").value = trangThaiTaiSan || "";
+            document.getElementById("maDeTaiKHCN").value = maDeTaiKHCN || "";
+
+            // Xử lý ngày tháng — loại bỏ ký tự T, Z, chỉ giữ yyyy-MM-dd
+            if (ngayCapNhat && ngayCapNhat !== "null" && ngayCapNhat !== "0001-01-01T00:00:00") {
+                const dateOnly = ngayCapNhat.split('T')[0];
+                document.getElementById("ngayCapNhat").value = dateOnly;
+            } else {
+                document.getElementById("ngayCapNhat").value = "";
+            }
+
+            // Hiệu ứng chọn hàng
+            document.querySelectorAll("tbody tr").forEach(tr => tr.classList.remove("table-active"));
+            event.currentTarget.classList.add("table-active");
+        }
+    </script>
+
+    <script>
+        async function suaTaiSan() {
+            const id = parseInt(document.getElementById("soDanhMuc").value);
+            if (!id) {
+                alert("Vui lòng chọn tài sản cần sửa!");
+                return;
+            }
+
+            const taiSan = {
+                ten: document.getElementById("ten").value,
+                nguyenGia: parseFloat(document.getElementById("nguyenGia").value) || null,
+                khauHao: parseFloat(document.getElementById("khauHao").value) || null,
+                haoMon: parseFloat(document.getElementById("haoMon").value) || null,
+                giaTriConLai: parseFloat(document.getElementById("giaTriConLai").value) || null,
+                trangThaiTaiSan: document.getElementById("trangThaiTaiSan").value,
+                ngayCapNhat: document.getElementById("ngayCapNhat").value
+                    ? new Date(document.getElementById("ngayCapNhat").value).toISOString()
+                    : null,
+                maDeTaiKHCN: parseInt(document.getElementById("maDeTaiKHCN").value) || null
+            };
+
+            console.log("PUT /api/TaiSans/" + id, taiSan);
+
+            try {
+                const res = await fetch(`https://localhost:7147/api/TaiSans/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(taiSan)
+                });
+
+                if (res.ok) {
+                    alert("✅ Cập nhật thành công!");
+                    location.reload();
+                } else {
+                    const errText = await res.text();
+                    alert("❌ Lỗi khi cập nhật: " + res.status + " - " + errText);
+                }
+            } catch (err) {
+                alert("⚠️ Không thể kết nối API: " + err.message);
+            }
+        }
+    </script>
+    <script>
+        async function xoaTaiSan() {
+            const id = document.getElementById("soDanhMuc").value;
+
+            if (!id) {
+                alert("⚠️ Vui lòng chọn tài sản cần xóa!");
+                return;
+            }
+
+            if (!confirm("Bạn có chắc chắn muốn xóa tài sản này không?")) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://localhost:7147/api/TaiSans/${id}`, {
+                    method: "DELETE"
+                });
+
+                if (res.ok) {
+                    alert("✅ Xóa tài sản thành công!");
+                    location.reload();
+                } else {
+                    const errText = await res.text();
+                    alert("❌ Lỗi khi xóa: " + res.status + " - " + errText);
+                }
+            } catch (err) {
+                alert("⚠️ Không thể kết nối API: " + err.message);
+            }
+        }
+    </script>
+
+
+</body>
+</html>
