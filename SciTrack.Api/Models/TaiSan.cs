@@ -13,6 +13,9 @@ namespace SciTrack.Api.Models
         [Required]
         [Column("Ten")]
         public string Ten { get; set; } = string.Empty;
+        [Column("SoDanhMuc")]
+        public string? SoDanhMuc { get; set; }
+
 
         [Column("NguyenGia")]
         public decimal? NguyenGia { get; set; }

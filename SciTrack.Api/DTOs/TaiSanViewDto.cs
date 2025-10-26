@@ -5,6 +5,7 @@
     /// </summary>
     public class TaiSanViewDto
     {
+        public int Id { get; set; }
         public string SoDanhMuc { get; set; } = string.Empty;
         public string Ten { get; set; } = string.Empty;
         public decimal? NguyenGia { get; set; }

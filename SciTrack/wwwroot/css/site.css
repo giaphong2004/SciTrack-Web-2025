@@ -1,40 +1,202 @@
-body {
-    display: flex;
+﻿/* ==== RESET CƠ BẢN ==== */
+* {
+    box-sizing: border-box;
     margin: 0;
-    font-family: "Segoe UI", sans-serif;
+    padding: 0;
+    font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
-/* Sidebar */
+body {
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+/* ==== SIDEBAR ==== */
 .sidebar {
     width: 230px;
-    background-color: #007bff;
-    color: white;
     min-height: 100vh;
+    background-color: #007bff;
+    color: #fff;
+    position: fixed;
+    left: 0;
+    top: 0;
     padding: 20px 10px;
 }
 
-    .sidebar h4 {
+    .sidebar h5 {
+        font-weight: bold;
+        margin-bottom: 20px;
         text-align: center;
-        font-size: 1.2rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
     }
 
     .sidebar a {
-        color: white;
+        display: flex;
+        align-items: center;
+        color: #fff;
         text-decoration: none;
-        display: block;
         padding: 10px 15px;
-        border-radius: 6px;
-        transition: 0.2s;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
     }
 
-        .sidebar a:hover {
-            background-color: #0099FF;
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
-/* Main content */
-.content {
-    flex: 1;
-    padding: 25px;
-    background-color: #f5f6fa;
+/* ==== NỘI DUNG CHÍNH ==== */
+.main-content {
+    margin-left: 230px;
+    padding: 30px;
+}
+
+/* ==== FORM ==== */
+form label {
+    font-weight: 500;
+    color: #0f172a;
+}
+
+form input,
+form select,
+form textarea {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 10px;
+    width: 100%;
+    transition: border-color 0.2s ease;
+}
+
+    form input:focus,
+    form select:focus,
+    form textarea:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+/* Mã đề tài (TS-001, TS-002...) */
+.ma-detai a {
+    color: #000 !important; /* Đen */
+    text-decoration: none; /* Bỏ gạch chân */
+}
+
+    .ma-detai a:hover {
+        color: #333; /* Đen đậm hơn khi hover */
+        text-decoration: underline; /* Tô đậm nhẹ khi rê chuột */
+    }
+
+/* ==== BUTTON ==== */
+.btn {
+    border-radius: 10px;
+    font-weight: 500;
+    padding: 6px 16px;
+    transition: all 0.2s ease;
+}
+
+.btn-success {
+    background-color: #22c55e;
+    border: none;
+}
+
+.btn-warning {
+    background-color: #f59e0b;
+    border: none;
+    color: #fff;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #334155;
+    border: none;
+    color: #fff;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* ==== BẢNG ==== */
+.table {
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+    .table thead {
+        background-color: #f1f5f9;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .table td, .table th {
+        vertical-align: middle !important;
+        padding: 10px 14px !important;
+    }
+
+/* ==== LINK ĐỀ TÀI ==== */
+.detai-link {
+    color: #000;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+    .detai-link:hover {
+        background-color: #f1f5f9;
+    }
+
+.ma-taisan {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.ten-detai {
+    color: #000000; /* đen */
+    font-weight: 500;
+}
+
+.kinhphi {
+    color: #000000; /* đen */
+    font-weight: 500;
+}
+
+/* ==== TIÊU ĐỀ ==== */
+h5, h6 {
+    font-weight: 600;
+    color: #1d4ed8;
+}
+/* ==== SIDEBAR RESPONSIVE ==== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px; /* thu nhỏ lại */
+        padding: 20px 5px;
+        text-align: center;
+    }
+
+        .sidebar h5 {
+            display: none; /* ẩn tiêu đề “Quản lý KH&CN” */
+        }
+
+        .sidebar a {
+            justify-content: center; /* căn giữa icon */
+            padding: 10px 0;
+        }
+
+            .sidebar a span {
+                display: none; /* ẩn chữ trong link */
+            }
+
+            .sidebar a i {
+                font-size: 1.3rem; /* phóng to icon */
+                margin: 0;
+            }
+
+    /* Đảm bảo phần nội dung chính tự dịch sang phải hợp lý */
+    .main-content {
+        margin-left: 70px;
+    }
 }
