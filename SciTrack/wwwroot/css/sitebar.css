@@ -1,0 +1,57 @@
+﻿/* ==== SIDEBAR ==== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background-color: #0d6efd; /* 🔵 nền xanh dương */
+    box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+    z-index: 1000;
+    color: white;
+}
+
+    .sidebar a {
+        display: flex;
+        align-items: center;
+        padding: 10px 12px;
+        color: #ffffff; /* chữ trắng */
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.15); /* hiệu ứng hover nhẹ */
+            color: #ffffff;
+        }
+
+        .sidebar a.active {
+            background-color: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+/* Ẩn chữ chỉ hiện icon trên màn hình nhỏ (mobile) */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+        padding: 10px 6px;
+    }
+
+        .sidebar span {
+            display: none;
+        }
+
+    .content {
+        margin-left: 70px;
+    }
+}
+
+/* ==== NỘI DUNG CHÍNH ==== */
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    background-color: #f8fafc;
+    min-height: 100vh;
+}
