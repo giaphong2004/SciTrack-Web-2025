@@ -1,123 +1,144 @@
 ﻿@model List<SciTrack.web.Models.TaiSan>
 @{
     ViewData["Title"] = "Tài sản KH&CN";
+    Layout = "_Layout";
+    var selected = ViewBag.Selected as SciTrack.web.Models.TaiSan;
 }
 
-<div class="d-flex" style="min-height: 100vh; background-color: #f8fafc;">
-    <!-- NỘI DUNG CHÍNH -->
+<main class="main-content">
     <div class="flex-fill p-4">
-        <h5 class="fw-bold text-primary">Phần mềm quản lý KHCN — Giao diện xanh dương</h5>
-        <h6 class="fw-bold mb-3">TSKHCN — Tài sản KHCN</h6>
+        <h5 class="fw-bold text-primary">Phần mềm quản lý KH&CN — Quản lý tài sản</h5>
+       
+        <h6 class="fw-bold mb-3">Tài sản KH&CN (chi tiết)</h6>
 
-        @if (ViewBag.Error != null)
+        @if (TempData["Message"] != null)
         {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>⚠️ Lỗi:</strong> @ViewBag.Error
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <div class="alert alert-info mt-2">@TempData["Message"]</div>
         }
 
-        <div class="card shadow-sm border-0 rounded-3">
+        <div class="card shadow-sm border-0 rounded-3 mt-3">
             <div class="card-body">
                 <div class="row">
-                    <!-- Form bên trái -->
-                    <div class="col-md-7">
-                        <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold">Số danh mục (ĐI1.1)</label>
-                                <input type="text" class="form-control" />
+                    <!-- 🟩 Form bên trái -->
+                    <div class="col-md-6">
+                        <form asp-controller="TaiSan" method="post">
+                            <input type="hidden" name="Id" value="@(selected?.Id ?? 0)" />
+
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Số danh mục</label>
+                                    <input type="text" name="SoDanhMuc" class="form-control" value="@(selected?.SoDanhMuc ?? "")" />
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Tên tài sản</label>
+                                    <input type="text" name="Ten" class="form-control" value="@(selected?.Ten ?? "")" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Nguyên giá</label>
+                                    <input type="number" name="NguyenGia" class="form-control" value="@(selected?.NguyenGia ?? 0)" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Khấu hao</label>
+                                    <input type="number" name="KhauHao" class="form-control" value="@(selected?.KhauHao ?? 0)" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Hao mòn</label>
+                                    <input type="number" name="HaoMon" class="form-control" value="@(selected?.HaoMon ?? 0)" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Giá trị còn lại</label>
+                                    <input type="number" name="GiaTriConLai" class="form-control" value="@(selected?.GiaTriConLai ?? 0)" />
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Trạng thái</label>
+                                    <input type="text" name="TrangThaiTaiSan" class="form-control" value="@(selected?.TrangThaiTaiSan ?? "")" />
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Ngày cập nhật</label>
+                                    <input type="date" name="NgayCapNhat" class="form-control"
+                                           value="@(selected?.NgayCapNhat?.ToString("yyyy-MM-dd") ?? "")" />
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Mã đề tài KH&CN</label>
+                                    <input type="text" name="MaDeTaiKHCN" class="form-control" value="@(selected?.MaDeTaiKHCN ?? "")" />
+                                </div>
                             </div>
 
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold">Tên (ĐI1.2)</label>
-                                <input type="text" class="form-control" placeholder="Nhập tên tài sản" />
-                            </div>
+                            <!-- 🟣 Các nút thao tác -->
+                            <div class="mt-4 d-flex flex-wrap gap-2">
+                                <button type="submit" formaction="/TaiSan/Create" class="btn btn-success">
+                                    <i class="bi bi-plus-circle"></i> Thêm
+                                </button>
 
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Nguyên giá (ĐI1.3)</label>
-                                <input type="text" class="form-control" />
-                            </div>
+                                <button type="submit" formaction="/TaiSan/Update" class="btn btn-warning text-white">
+                                    <i class="bi bi-pencil-square"></i> Sửa
+                                </button>
 
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Khấu hao (ĐI1.4)</label>
-                                <input type="text" class="form-control" />
-                            </div>
+                                <button type="submit" formaction="/TaiSan/Delete" name="id" value="@(selected?.Id ?? 0)"
+                                        class="btn btn-danger">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </button>
 
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Hao mòn (ĐI1.5)</label>
-                                <input type="text" class="form-control" />
-                            </div>
+                                <button type="button" class="btn btn-secondary">
+                                    <i class="bi bi-printer"></i> In
+                                </button>
 
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Giá trị còn lại (ĐI1.6)</label>
-                                <input type="text" class="form-control" />
+                                <a href="/TaiSan/Index" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Đóng
+                                </a>
                             </div>
-
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold">Trạng thái tài sản (ĐI1.7)</label>
-                                <input type="text" class="form-control" />
-                            </div>
-
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold">Ngày cập nhật (ĐI1.8)</label>
-                                <input type="date" class="form-control" />
-                            </div>
-
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold">Mã số đề tài KH&CN (ĐI1.9)</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-
-                        <div class="mt-4 d-flex gap-2">
-                            <button class="btn btn-success">Thêm mới</button>
-                            <button class="btn btn-primary">Lưu</button>
-                            <button class="btn btn-danger">Xóa</button>
-                            <button class="btn btn-secondary">Đóng</button>
-                        </div>
+                        </form>
                     </div>
 
-                    <!-- Danh sách tài sản bên phải -->
-                    <div class="col-md-5">
-                        <h6 class="fw-bold mb-3">Danh sách tài sản (@Model.Count)</h6>
-                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                            <table class="table table-bordered table-hover align-middle">
-                                <thead class="table-light sticky-top">
+                    <!-- 🟦 Danh sách tài sản bên phải -->
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-3">Danh sách tài sản</h6>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>Mã</th>
-                                        <th>Tên</th>
-                                        <th>Trạng thái</th>
+                                        <th style="width:25%">Mã</th>
+                                        <th style="width:50%">Tên</th>
+                                        <th style="width:25%">Trạng Thái</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model != null && Model.Any())
-                                    {
-                                        @foreach (var ts in Model)
-                                        {
-                                            <tr style="cursor: pointer;">
-                                                <td>@ts.SoDanhMuc</td>
-                                                <td>@ts.Ten</td>
-                                                <td>
-                                                    <span class="badge bg-info">@ts.TrangThaiTaiSan</span>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
+                                    @foreach (var ts in Model)
                                     {
                                         <tr>
-                                            <td colspan="3" class="text-center text-muted">
-                                                Không có dữ liệu
+                                            <td colspan="3">
+                                                <form method="get" asp-controller="TaiSan" asp-action="Index">
+                                                    <input type="hidden" name="id" value="@ts.Id" />
+                                                    <button type="submit" class="w-100 p-2 border-0 bg-transparent text-start">
+                                                        <div class="row">
+                                                            <div class="col-3 fw-semibold text-primary">@ts.SoDanhMuc</div>
+                                                            <div class="col-5">@ts.Ten</div>
+                                                            <div class="col-4 text-end">
+                                                                <span class="badge-trangthai @(ts.TrangThaiTaiSan?.ToLower() == "sử dụng" ? "su-dung" : "khai-thac")">
+                                                                    @ts.TrangThaiTaiSan
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
-                        <small class="text-muted">Click hàng để chỉnh sửa / in / xóa</small>
+                        <small class="text-muted">Chọn hàng để xem hoặc chỉnh sửa chi tiết</small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
