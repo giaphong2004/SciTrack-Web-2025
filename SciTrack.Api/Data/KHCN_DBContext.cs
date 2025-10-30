@@ -10,7 +10,7 @@ namespace SciTrack.Api.Data
         }
 
         public DbSet<HopDong> HopDongs { get; set; }
-        public DbSet<ThietBi> ThietBis { get; set; }
+        public DbSet<TBKHCN> TTBKHCNs { get; set; }  // Sửa tên từ ThietBis thành TTBKHCNs
         public DbSet<DeTai> DeTais { get; set; }
         public DbSet<KetQuaDeTai> KetQuaDeTais { get; set; }
         public DbSet<TaiSan> TaiSans { get; set; }
@@ -19,7 +19,7 @@ namespace SciTrack.Api.Data
         {
             // Cấu hình mối quan hệ HDKHCN -> TTBKHCN (Một-Nhiều)
             modelBuilder.Entity<HopDong>()
-                .HasMany(hd => hd.ThietBis)
+                .HasMany(hd => hd.TTBKHCNs)  // Sửa tên thành TTBKHCNs
                 .WithOne(tb => tb.HopDong)
                 .HasForeignKey(tb => tb.MaSoHopDong)
                 .OnDelete(DeleteBehavior.SetNull);

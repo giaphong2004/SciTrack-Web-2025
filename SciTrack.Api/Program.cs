@@ -30,9 +30,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.UseCors("allow-fe");
-app.MapControllers();
+// Điều chỉnh thứ tự middleware
+app.UseRouting(); // Định tuyến request
+app.UseCors("allow-fe"); // CORS trước UseAuthorization
+app.UseAuthorization(); // Authorization
+app.MapControllers(); // Map endpoints
 
 app.Run();

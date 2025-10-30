@@ -5,7 +5,7 @@
     /// </summary>
     public class TaiSanViewDto
     {
-        public string SoDanhMuc { get; set; } = string.Empty;
+        public string SoDanhMuc { get; set; } =string.Empty;
         public string Ten { get; set; } = string.Empty;
         public decimal? NguyenGia { get; set; }
         public decimal? KhauHao { get; set; }

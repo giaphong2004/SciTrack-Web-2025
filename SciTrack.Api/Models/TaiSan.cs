@@ -10,6 +10,10 @@ namespace SciTrack.Api.Models
         [Column("ID")]
         public int Id { get; set; }
 
+        [Column("SoDanhMuc")]
+        public string SoDanhMuc { get; set; }
+
+
         [Required]
         [Column("Ten")]
         public string Ten { get; set; } = string.Empty;

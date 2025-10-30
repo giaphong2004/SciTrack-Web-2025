@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SciTrack.Api.Models
 {
@@ -38,10 +38,10 @@ namespace SciTrack.Api.Models
         [Column("GhiChu")]
         public string? GhiChu { get; set; }
 
-        // Mối quan hệ: Một Hợp đồng có nhiều Thiết bị
-        public virtual ICollection<ThietBi> ThietBis { get; set; } = new List<ThietBi>();
-
-        // Mối quan hệ: Một Hợp đồng có nhiều Kết quả
+        // ✅ Quan hệ 1-N với KetQuaDeTai
         public virtual ICollection<KetQuaDeTai> KetQuaDeTais { get; set; } = new List<KetQuaDeTai>();
+
+        // ✅ Quan hệ 1-N với TTBKHCN (ThietBi)
+        public virtual ICollection<TBKHCN> TTBKHCNs { get; set; } = new List<TBKHCN>();
     }
 }

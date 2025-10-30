@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SciTrack.Api.Models
 {
@@ -29,14 +29,13 @@ namespace SciTrack.Api.Models
         [Column("NgayCapNhatTaiSan")]
         public DateTime? NgayCapNhatTaiSan { get; set; }
 
-        // Foreign key to HDKHCN
         [Column("MaSoThietBi")]
         public int? MaSoThietBi { get; set; }
-        
-        [ForeignKey("MaSoThietBi")]
-        public virtual HopDong? HopDong { get; set; }
 
-        // Mối quan hệ: Một Kết quả có nhiều Đề tài
+        [ForeignKey("MaSoThietBi")]
+        public virtual HopDong? HopDong { get; set; }  // Liên kết với HDKHCN
+
+        // ✅ Quan hệ 1-N với DeTai
         public virtual ICollection<DeTai> DeTais { get; set; } = new List<DeTai>();
     }
 }

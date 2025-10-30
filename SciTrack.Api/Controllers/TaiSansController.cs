@@ -28,7 +28,7 @@ namespace SciTrack.Api.Controllers
                 .AsNoTracking()
                 .Select(ts => new TaiSanViewDto
                 {
-                    SoDanhMuc = ts.Id.ToString(), // Số danh mục = ID
+                    SoDanhMuc = ts.SoDanhMuc, // Số danh mục = ID
                     Ten = ts.Ten,
                     NguyenGia = ts.NguyenGia,
                     KhauHao = ts.KhauHao,
@@ -55,7 +55,7 @@ namespace SciTrack.Api.Controllers
                 .Where(ts => ts.Id == id)
                 .Select(ts => new TaiSanViewDto
                 {
-                    SoDanhMuc = ts.Id.ToString(), // Số danh mục = ID
+                    SoDanhMuc = ts.SoDanhMuc, 
                     Ten = ts.Ten,
                     NguyenGia = ts.NguyenGia,
                     KhauHao = ts.KhauHao,
@@ -83,6 +83,7 @@ namespace SciTrack.Api.Controllers
         {
             var newTaiSan = new TaiSan
             {
+                SoDanhMuc = taiSanDto.SoDanhMuc,
                 Ten = taiSanDto.Ten,
                 NguyenGia = taiSanDto.NguyenGia,
                 KhauHao = taiSanDto.KhauHao,
@@ -134,6 +135,7 @@ namespace SciTrack.Api.Controllers
             }
 
             // Cập nhật thông tin
+            taiSan.SoDanhMuc = taiSanDto.SoDanhMuc;
             taiSan.Ten = taiSanDto.Ten;
             taiSan.NguyenGia = taiSanDto.NguyenGia;
             taiSan.KhauHao = taiSanDto.KhauHao;
