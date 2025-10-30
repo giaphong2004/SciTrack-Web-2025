@@ -1,18 +1,24 @@
-﻿namespace SciTrack.Api.DTOs
+﻿using System;
+
+namespace SciTrack.Api.DTOs
 {
+    /// <summary>
+    /// Dữ liệu trả về cho bảng Thiết Bị Khoa Học Công Nghệ (TTBKHCN)
+    /// </summary>
     public class TBKHCNViewDto
     {
-        public int ID { get; set; }
-        public string TenThietBi { get; set; }
-        public DateTime? NgayDuaVaoSuDung { get; set; }
-        public decimal? NguyenGia { get; set; }
-        public decimal? KhauHao { get; set; }
-        public decimal? GiaTriConLai { get; set; }
-        public string? DT_HD_KHCN_LienQuan { get; set; }
-        public string? NhatKySuDung { get; set; }
-        public string? TinhTrangThietBi { get; set; }
+        public int ID { get; set; }                              
+        public string TenThietBi { get; set; } = string.Empty;   
+        public DateTime? NgayDuaVaoSuDung { get; set; }          
+        public decimal? NguyenGia { get; set; }                  
+        public decimal? KhauHao { get; set; }                    
+        public decimal? GiaTriConLai { get; set; }               
 
-        public int? MaSoHopDong { get; set; }
-        public string? TenDoiTac { get; set; } // Lấy từ bảng HopDong
+        public string? DT_HD_KHCN_LienQuan { get; set; }         
+        public string? NhatKySuDung { get; set; }                
+        public string? TinhTrangThietBi { get; set; }           
+
+        public int? MaSoHopDong { get; set; }                    
+        public string? TenDoiTac { get; set; }                 
     }
 }

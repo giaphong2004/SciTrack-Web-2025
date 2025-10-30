@@ -13,6 +13,6 @@
         public string? CacHopDong { get; set; }
         public DateTime? NgayCapNhatTaiSan { get; set; }
         public int? MaSoThietBi { get; set; }
-        public string? TenHopDong { get; set; }  // Thêm tên hợp đồng từ navigation
+        public string? TenHopDong { get; set; }  // Tên hợp đồng (navigation)
     }
 }

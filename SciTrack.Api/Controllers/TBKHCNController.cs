@@ -17,7 +17,7 @@ namespace SciTrack.Api.Controllers
             _context = context;
         }
 
-        // GET: api/TBKHCN
+        // ✅ GET ALL
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TBKHCNViewDto>>> GetTBKHCNs()
         {
@@ -42,7 +42,7 @@ namespace SciTrack.Api.Controllers
             return Ok(result);
         }
 
-        // GET: api/TBKHCN/5
+        // ✅ GET BY ID
         [HttpGet("{id}")]
         public async Task<ActionResult<TBKHCNViewDto>> GetTBKHCN(int id)
         {
@@ -71,10 +71,13 @@ namespace SciTrack.Api.Controllers
             return Ok(tb);
         }
 
-        // POST: api/TBKHCN
+        // ✅ POST
         [HttpPost]
-        public async Task<ActionResult<TBKHCN>> PostTBKHCN(TBKHCNCreateDto dto)
+        public async Task<ActionResult<TBKHCN>> PostTBKHCN([FromBody] TBKHCNCreateDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var tb = new TBKHCN
             {
                 TenThietBi = dto.TenThietBi,
@@ -94,13 +97,18 @@ namespace SciTrack.Api.Controllers
             return CreatedAtAction(nameof(GetTBKHCN), new { id = tb.ID }, tb);
         }
 
-        // PUT: api/TBKHCN/5
+        // ✅ PUT
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTBKHCN(int id, TBKHCNCreateDto dto)
+        public async Task<IActionResult> PutTBKHCN(int id, [FromBody] TBKHCNCreateDto dto)
         {
-            var tb = await _context.TTBKHCNs.FindAsync(id);
-            if (tb == null) return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            var tb = await _context.TTBKHCNs.FindAsync(id);
+            if (tb == null)
+                return NotFound();
+
+            // Gán lại các cột được phép chỉnh
             tb.TenThietBi = dto.TenThietBi;
             tb.NgayDuaVaoSuDung = dto.NgayDuaVaoSuDung;
             tb.NguyenGia = dto.NguyenGia;
@@ -112,18 +120,27 @@ namespace SciTrack.Api.Controllers
             tb.MaSoHopDong = dto.MaSoHopDong;
 
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
-        // DELETE: api/TBKHCN/5
+        // ✅ DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTBKHCN(int id)
         {
             var tb = await _context.TTBKHCNs.FindAsync(id);
-            if (tb == null) return NotFound();
+            if (tb == null)
+                return NotFound();
 
-            _context.TTBKHCNs.Remove(tb);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.TTBKHCNs.Remove(tb);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest("Thiết bị này đang được tham chiếu ở bảng khác, không thể xóa.");
+            }
 
             return NoContent();
         }

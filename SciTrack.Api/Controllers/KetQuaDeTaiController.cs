@@ -17,9 +17,9 @@ namespace SciTrack.Api.Controllers
             _context = context;
         }
 
-        /// <summary>
-        /// GET: api/KetQuaDeTai - Lấy danh sách tất cả kết quả đề tài
-        /// </summary>
+        // =========================
+        // GET: api/KetQuaDeTai
+        // =========================
         [HttpGet]
         public async Task<ActionResult<IEnumerable<KetQuaDeTaiViewDto>>> GetKetQuaDeTais()
         {
@@ -37,16 +37,15 @@ namespace SciTrack.Api.Controllers
                     NgayCapNhatTaiSan = k.NgayCapNhatTaiSan,
                     MaSoThietBi = k.MaSoThietBi,
                     TenHopDong = k.HopDong != null ? k.HopDong.TenDoiTac : "Không có hợp đồng"
-
                 })
                 .ToListAsync();
 
             return Ok(ketQuas);
         }
 
-        /// <summary>
-        /// GET: api/KetQuaDeTai/5 - Lấy chi tiết một kết quả đề tài theo ID
-        /// </summary>
+        // =========================
+        // GET: api/KetQuaDeTai/{id}
+        // =========================
         [HttpGet("{id}")]
         public async Task<ActionResult<KetQuaDeTaiViewDto>> GetKetQuaDeTai(int id)
         {
@@ -65,23 +64,20 @@ namespace SciTrack.Api.Controllers
                     NgayCapNhatTaiSan = k.NgayCapNhatTaiSan,
                     MaSoThietBi = k.MaSoThietBi,
                     TenHopDong = k.HopDong != null ? k.HopDong.TenDoiTac : "Không có hợp đồng"
-
                 })
                 .FirstOrDefaultAsync();
 
             if (ketQuaDto == null)
-            {
                 return NotFound(new { message = $"Không tìm thấy kết quả với ID = {id}" });
-            }
 
             return Ok(ketQuaDto);
         }
 
-        /// <summary>
-        /// POST: api/KetQuaDeTai - Tạo mới một kết quả đề tài
-        /// </summary>
+        // =========================
+        // POST: api/KetQuaDeTai
+        // =========================
         [HttpPost]
-        public async Task<ActionResult<KetQuaDeTaiViewDto>> PostKetQuaDeTai(KetQuaDeTaiCreateDto dto)
+        public async Task<ActionResult> PostKetQuaDeTai(KetQuaDeTaiCreateDto dto)
         {
             var newKetQua = new KetQuaDeTai
             {
@@ -97,7 +93,6 @@ namespace SciTrack.Api.Controllers
             _context.KetQuaDeTais.Add(newKetQua);
             await _context.SaveChangesAsync();
 
-            // Lấy thông tin hợp đồng nếu có
             string? tenHopDong = null;
             if (newKetQua.MaSoThietBi.HasValue)
             {
@@ -107,31 +102,29 @@ namespace SciTrack.Api.Controllers
                 tenHopDong = hopDong?.TenDoiTac;
             }
 
-            return CreatedAtAction(
-                nameof(GetKetQuaDeTai),
-                new { id = newKetQua.Id },
+            return CreatedAtAction(nameof(GetKetQuaDeTai), new { id = newKetQua.Id },
                 new
                 {
-                    id = newKetQua.Id,
-                    tenKetQua = newKetQua.TenKetQua,
-                    maSoThietBi = newKetQua.MaSoThietBi?.ToString(),
-                    tenHopDong = tenHopDong,
-                    message = "Tạo kết quả đề tài thành công"
-                }
-            );
+                    message = "Tạo kết quả đề tài thành công",
+                    data = new
+                    {
+                        id = newKetQua.Id,
+                        tenKetQua = newKetQua.TenKetQua,
+                        maSoThietBi = newKetQua.MaSoThietBi,
+                        tenHopDong
+                    }
+                });
         }
 
-        /// <summary>
-        /// PUT: api/KetQuaDeTai/5 - Cập nhật kết quả đề tài
-        /// </summary>
+        // =========================
+        // PUT: api/KetQuaDeTai/{id}
+        // =========================
         [HttpPut("{id}")]
         public async Task<IActionResult> PutKetQuaDeTai(int id, KetQuaDeTaiCreateDto dto)
         {
             var ketQua = await _context.KetQuaDeTais.FindAsync(id);
             if (ketQua == null)
-            {
                 return NotFound(new { message = $"Không tìm thấy kết quả với ID = {id}" });
-            }
 
             ketQua.TenKetQua = dto.TenKetQua;
             ketQua.PhanLoai = dto.PhanLoai;
@@ -141,28 +134,61 @@ namespace SciTrack.Api.Controllers
             ketQua.NgayCapNhatTaiSan = dto.NgayCapNhatTaiSan ?? DateTime.Now;
             ketQua.MaSoThietBi = dto.MaSoThietBi;
 
-            _context.Entry(ketQua).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Cập nhật kết quả đề tài thành công" });
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("REFERENCE"))
+                {
+                    return BadRequest(new
+                    {
+                        message = "Không thể cập nhật vì dữ liệu liên quan đang được tham chiếu."
+                    });
+                }
 
-            return NoContent();
+                return StatusCode(500, new
+                {
+                    message = "Lỗi trong quá trình cập nhật kết quả đề tài.",
+                    detail = ex.Message
+                });
+            }
         }
 
-        /// <summary>
-        /// DELETE: api/KetQuaDeTai/5 - Xóa kết quả đề tài
-        /// </summary>
+        // =========================
+        // DELETE: api/KetQuaDeTai/{id}
+        // =========================
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteKetQuaDeTai(int id)
         {
             var ketQua = await _context.KetQuaDeTais.FindAsync(id);
             if (ketQua == null)
-            {
                 return NotFound(new { message = $"Không tìm thấy kết quả với ID = {id}" });
+
+            try
+            {
+                _context.KetQuaDeTais.Remove(ketQua);
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Xóa kết quả đề tài thành công" });
             }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("REFERENCE"))
+                {
+                    return BadRequest(new
+                    {
+                        message = "Không thể xóa vì kết quả đề tài này đang được tham chiếu ở bảng Đề Tài."
+                    });
+                }
 
-            _context.KetQuaDeTais.Remove(ketQua);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Xóa kết quả đề tài thành công" });
+                return StatusCode(500, new
+                {
+                    message = "Đã xảy ra lỗi trong quá trình xóa kết quả đề tài.",
+                    detail = ex.Message
+                });
+            }
         }
     }
 }
