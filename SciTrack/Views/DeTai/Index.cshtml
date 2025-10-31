@@ -1,271 +1,155 @@
-﻿@{
-    ViewData["Title"] = "Đề tài khoa học (ĐTKH)";
+﻿@model List<SciTrack.web.Models.DeTai>
+@{
+    ViewData["Title"] = "Đề tài KHCN";
+    var selected = ViewBag.Selected as SciTrack.web.Models.DeTai;
+
 }
+@{
+    Layout = "_Layout";
+}
+
 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"]</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/site.css" rel="stylesheet" />
+    <!-- ✅ CSS tùy chỉnh của bạn — ĐẶT DÒNG NÀY Ở CUỐI HEAD -->
+      
+        <link href="~/css/site.css" rel="stylesheet" />
 </head>
+    <main class="main-content">
 <body>
-    <div class="d-flex">
-        <!-- Nội dung chính -->
-        <div class="content p-4 flex-fill">
-            <h5 class="fw-bold mb-3 text-primary">Phần mềm quản lý KHCN — Giao diện xanh dương</h5>
-            <h6 class="fw-bold mb-3">ĐTKHCN — Đề tài KHCN (chi tiết)</h6>
-            <div class="card p-4 shadow-sm border-0">
+    <div class="flex-fill p-4">
+        <h5 class="fw-bold text-primary">Phần mềm quản lý KHCN — Quản lý Đề tài</h5>
+        <h6 class="fw-bold mb-3">DTKHCN - Đề tài KHCN ̣chi tiết)</h6>
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-info mt-2">@TempData["Message"]</div>
+        }
+
+        <div class="card shadow-sm border-0 rounded-3 mt-3">
+            <div class="card-body">
                 <div class="row">
-                    <!-- Form bên trái -->
+                    <!-- 🟩 FORM BÊN TRÁI -->
                     <div class="col-md-7">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Mã số kết quả (ID2.1)</label>
-                            <input type="text" class="form-control" id="maDeTai" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Tên đề tài KHCN (ID2.2)</label>
-                            <input type="text" class="form-control" id="tenDeTai">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Ngày cập nhật tài sản (ID2.3)</label>
-                            <input type="date" class="form-control" id="ngayCapNhat">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Các quyết định liên quan (ID2.4)</label>
-                            <textarea class="form-control" rows="2" id="quyetDinhLienQuan"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Quyết định xử lí tài sản (ID2.5)</label>
-                            <textarea class="form-control" rows="2" id="quyetDinhXuLy"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Kinh phí thực hiện (ID2.6)</label>
-                            <input type="number" class="form-control" id="kinhPhiThucHien">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Kinh phí giao khóa chuyên (ID2.7)</label>
-                            <input type="number" class="form-control" id="kinhPhiGiaoKhoa">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Kinh phí vật tư tiêu hao (ID2.8)</label>
-                            <input type="number" class="form-control" id="kinhPhiTieuHao">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Hao mòn / khấu hao liên quan (ID2.9)</label>
-                            <input type="number" class="form-control" id="khauHao">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Kết quả đề tài (ID2.10)</label>
-                            <input type="text" class="form-control" id="ketQuaDeTai">
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-success" onclick="addDeTai()">Thêm mới</button>
-                            <button class="btn btn-primary" onclick="saveDeTai()">Lưu</button>
-                            <button class="btn btn-danger" onclick="deleteDeTai()">Xóa</button>
-                            <button class="btn btn-secondary" onclick="printForm()">In</button>
-                            <button class="btn btn-dark" onclick="clearForm()">Đóng</button>
-                        </div>
+                        <form method="post">
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold">Mã số đề tài (ID2.1)</label>
+                                <input type="text" name="MaDeTai" class="form-control" value="@(selected?.MaDeTai ?? "")" required />
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold">Tên đề tài (ID2.2)</label>
+                                <input type="text" name="Ten" class="form-control" value="@(selected?.Ten ?? "")" required />
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold">Ngày cập nhật (ID2.3)</label>
+                                <input type="date" name="CapNhatTaiSanLanCuoi" class="form-control"
+                                       value="@(selected?.CapNhatTaiSanLanCuoi?.ToString("yyyy-MM-dd") ?? "")" />
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold">Các quyết định liên quan (ID2.4)</label>
+                                <textarea name="QuyetDinhThamChieu" class="form-control" rows="2">@(selected?.QuyetDinhThamChieu ?? "")</textarea>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold">Quyết định xử lý tài sản (ID2.5)</label>
+                                <textarea name="QuyetDinhXuLyTaiSan" class="form-control" rows="2">@(selected?.QuyetDinhXuLyTaiSan ?? "")</textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label fw-semibold">Kinh phí thực hiện (ID2.6)</label>
+                                    <input type="number" name="KinhPhiThucHien" class="form-control" value="@(selected?.KinhPhiThucHien ?? 0)" />
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label fw-semibold">Kinh phí đào tạo (ID2.7)</label>
+                                    <input type="number" name="KinhPhiDaoTao" class="form-control" value="@(selected?.KinhPhiDaoTao ?? 0)" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label fw-semibold">Kinh phí tiêu hao (ID2.8)</label>
+                                    <input type="number" name="KinhPhiTieuHao" class="form-control" value="@(selected?.KinhPhiTieuHao ?? 0)" />
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label fw-semibold">Khấu hao thiết bị (ID2.9)</label>
+                                    <input type="number" name="KhauHaoThietBi" class="form-control" value="@(selected?.KhauHaoThietBi ?? 0)" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Kết quả đề tài (ID2.10)</label>
+                                <input type="text" name="KetQuaDeTai" class="form-control" value="@(selected?.KetQuaDeTai ?? "")" />
+                            </div>
+
+                            <!-- 🟣 CÁC NÚT -->
+                            <div class="mt-3 d-flex gap-2">
+                                <button type="submit" formaction="/DeTai/Create" class="btn btn-success">
+                                    <i class="bi bi-plus-circle"></i> Thêm
+                                </button>
+
+                                <button type="submit" formaction="/DeTai/Update" class="btn btn-warning text-white">
+                                    <i class="bi bi-pencil-square"></i> Sửa
+                                </button>
+
+                                <button type="submit" formaction="/DeTai/Delete" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </button>
+
+                                <a class="btn btn-secondary">
+                                    <i class="bi bi-printer"></i> In
+                                </a>
+                                    <a href="/DeTai/Index" class="btn btn-secondary">
+                                        <i class="bi bi-x-circle"></i> Đóng
+                                    </a>
+                            </div>
+                        </form>
                     </div>
 
-                    <!-- Bảng bên phải -->
+                    <!-- 🟦 DANH SÁCH BÊN PHẢI -->
                     <div class="col-md-5">
-                        <h6 class="fw-bold mb-3">Danh sách đề tài</h6>
+                        <h6 class="fw-bold mb-3">Danh sách đề tài KHCN</h6>
                         <div class="table-responsive">
-                            <table class="table table-bordered align-middle" id="deTaiTable">
+                            <table class="table table-hover table-bordered align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Mã</th>
-                                        <th>Tên</th>
-                                        <th>Kết quả</th>
+                                        <th style="width:10%">Mã</th>
+                                        <th style="width:60%">Tên đề tài</th>
+                                        <th style="width:30%">Kinh phí</th>
                                     </tr>
                                 </thead>
-                                <tbody></tbody>
+                                <tbody>
+                                    @foreach (var dt in Model)
+                                    {
+                                        <tr>
+                                            <td colspan="3">
+                                                <a asp-controller="DeTai" asp-action="Index" asp-route-maDeTai="@dt.MaDeTai"
+                                                   class="detai-link w-100 d-block text-start text-decoration-none p-2">
+                                                    <div class="row">
+                                                        <div class="col-2 ma-detai">@dt.MaDeTai</div>
+                                                        <div class="col-7 ten-detai">@dt.Ten</div>
+                                                        <div class="col-3 text-end kinhphi">@String.Format("{0:N0}", dt.KinhPhiThucHien)</div>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
                             </table>
                         </div>
-                        <small class="text-muted">Click hàng để chỉnh sửa</small>
+                        <small class="text-muted">Nhấn vào hàng để chỉnh sửa / in / xóa</small>
+                    </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        // API base URL - Sử dụng HTTPS để khớp với backend
-        const apiUrl = 'https://localhost:7147/api/DeTais';
-
-        // Load danh sách đề tài khi trang được tải
-        document.addEventListener('DOMContentLoaded', loadDeTais);
-
-        async function loadDeTais() {
-            try {
-                console.log('Đang gọi API:', apiUrl);
-                const response = await fetch(apiUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    },
-                    mode: 'cors'
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
-                }
-                const data = await response.json(); // Dùng json trực tiếp
-                console.log('Phản hồi từ API:', data);
-                const deTais = Array.isArray(data) ? data : [];
-                const tbody = document.querySelector('#deTaiTable tbody');
-                tbody.innerHTML = '';
-                if (deTais.length === 0) {
-                    console.warn('Không có dữ liệu từ API, sử dụng dữ liệu mẫu');
-                    deTais = [
-                        { maDeTai: "1", ten: "Nghiên cứu Poly me", ketQuaDeTai: "Báo cáo 1" },
-                        { maDeTai: "2", ten: "Hệ thống AI", ketQuaDeTai: "Phần mềm 1.0" }
-                    ];
-                }
-                deTais.forEach(deTai => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${deTai.maDeTai || ''}</td>
-                        <td>${deTai.ten || ''}</td>
-                        <td>${deTai.ketQuaDeTai || ''}</td>
-                    `;
-                    row.addEventListener('click', () => populateForm(deTai));
-                    tbody.appendChild(row);
-                });
-                console.log('Tải dữ liệu thành công:', deTais.length, 'đề tài');
-            } catch (error) {
-                console.error('Lỗi chi tiết khi tải dữ liệu:', error);
-                alert('Lỗi khi tải danh sách đề tài: ' + error.message + '\nKiểm tra console (F12).');
-                const tbody = document.querySelector('#deTaiTable tbody');
-                tbody.innerHTML = `
-                    <tr><td>1</td><td>Đề tài mẫu 1</td><td>Kết quả mẫu</td></tr>
-                    <tr><td>2</td><td>Đề tài mẫu 2</td><td>Kết quả mẫu 2</td></tr>
-                `;
-                console.warn('Sử dụng dữ liệu mẫu do lỗi API');
-            }
-        }
-
-        async function addDeTai() {
-            const deTai = getFormData();
-            if (!deTai.Ten) {
-                alert('Vui lòng nhập tên đề tài!');
-                return;
-            }
-            try {
-                console.log('Đang thêm đề tài:', deTai);
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(deTai),
-                    mode: 'cors'
-                });
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                const result = await response.json();
-                alert(result.message || 'Thêm đề tài thành công');
-                clearForm();
-                loadDeTais();
-            } catch (error) {
-                console.error('Lỗi thêm đề tài:', error);
-                alert('Lỗi khi thêm đề tài: ' + error.message);
-            }
-        }
-
-        async function saveDeTai() {
-            const maDeTai = document.getElementById('maDeTai').value;
-            if (!maDeTai) {
-                alert('Vui lòng chọn một đề tài để chỉnh sửa');
-                return;
-            }
-            const deTai = getFormData();
-            try {
-                console.log('Đang cập nhật đề tài ID:', maDeTai);
-                const response = await fetch(`${apiUrl}/${maDeTai}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(deTai),
-                    mode: 'cors'
-                });
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                alert('Cập nhật đề tài thành công');
-                clearForm();
-                loadDeTais();
-            } catch (error) {
-                console.error('Lỗi cập nhật đề tài:', error);
-                alert('Lỗi khi cập nhật đề tài: ' + error.message);
-            }
-        }
-
-        async function deleteDeTai() {
-            const maDeTai = document.getElementById('maDeTai').value;
-            if (!maDeTai) {
-                alert('Vui lòng chọn một đề tài để xóa');
-                return;
-            }
-            if (!confirm('Bạn có chắc muốn xóa đề tài này?')) return;
-            try {
-                console.log('Đang xóa đề tài ID:', maDeTai);
-                const response = await fetch(`${apiUrl}/${maDeTai}`, {
-                    method: 'DELETE',
-                    mode: 'cors'
-                });
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                const result = await response.json();
-                alert(result.message || 'Xóa đề tài thành công');
-                clearForm();
-                loadDeTais();
-            } catch (error) {
-                console.error('Lỗi xóa đề tài:', error);
-                alert('Lỗi khi xóa đề tài: ' + error.message);
-            }
-        }
-
-        function populateForm(deTai) {
-            document.getElementById('maDeTai').value = deTai.maDeTai || '';
-            document.getElementById('tenDeTai').value = deTai.ten || '';
-            document.getElementById('ngayCapNhat').value = deTai.NgayCapNhatTaiSan ? new Date(deTai.NgayCapNhatTaiSan).toISOString().split('T')[0] : '';
-            document.getElementById('quyetDinhLienQuan').value = deTai.CacQuyetDinhLienQuan || '';
-            document.getElementById('quyetDinhXuLy').value = deTai.QuyetDinhXuLyTaiSan || '';
-            document.getElementById('kinhPhiThucHien').value = deTai.KinhPhiThucHien || '';
-            document.getElementById('kinhPhiGiaoKhoa').value = deTai.KinhPhiGiaoKhoaChuyen || '';
-            document.getElementById('kinhPhiTieuHao').value = deTai.KinhPhiVatTuTieuHao || '';
-            document.getElementById('khauHao').value = deTai.HaoMonKhauHaoLienQuan || '';
-            document.getElementById('ketQuaDeTai').value = deTai.KetQuaDeTai || '';
-            console.log('Đã điền dữ liệu cho đề tài:', deTai.maDeTai);
-        }
-
-        function getFormData() {
-            return {
-                MaDeTai: document.getElementById('maDeTai').value.trim() || null,
-                Ten: document.getElementById('tenDeTai').value.trim(),
-                NgayCapNhatTaiSan: document.getElementById('ngayCapNhat').value || null,
-                CacQuyetDinhLienQuan: document.getElementById('quyetDinhLienQuan').value.trim() || null,
-                QuyetDinhXuLyTaiSan: document.getElementById('quyetDinhXuLy').value.trim() || null,
-                KinhPhiThucHien: parseFloat(document.getElementById('kinhPhiThucHien').value) || null,
-                KinhPhiGiaoKhoaChuyen: parseFloat(document.getElementById('kinhPhiGiaoKhoa').value) || null,
-                KinhPhiVatTuTieuHao: parseFloat(document.getElementById('kinhPhiTieuHao').value) || null,
-                HaoMonKhauHaoLienQuan: parseFloat(document.getElementById('khauHao').value) || null,
-                KetQuaDeTai: document.getElementById('ketQuaDeTai').value.trim() || null
-            };
-        }
-
-        function clearForm() {
-            document.getElementById('maDeTai').value = '';
-            document.getElementById('tenDeTai').value = '';
-            document.getElementById('ngayCapNhat').value = '';
-            document.getElementById('quyetDinhLienQuan').value = '';
-            document.getElementById('quyetDinhXuLy').value = '';
-            document.getElementById('kinhPhiThucHien').value = '';
-            document.getElementById('kinhPhiGiaoKhoa').value = '';
-            document.getElementById('kinhPhiTieuHao').value = '';
-            document.getElementById('khauHao').value = '';
-            document.getElementById('ketQuaDeTai').value = '';
-            console.log('Đã xóa form');
-        }
-
-        function printForm() {
-            window.print();
-        }
-    </script>
 </body>
 </html>
+</main>

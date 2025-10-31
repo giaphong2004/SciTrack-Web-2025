@@ -28,6 +28,7 @@ namespace SciTrack.Api.Controllers
                 .AsNoTracking()
                 .Select(ts => new TaiSanViewDto
                 {
+                    Id = ts.Id,
                     SoDanhMuc = ts.SoDanhMuc, // Số danh mục = ID
                     Ten = ts.Ten,
                     NguyenGia = ts.NguyenGia,
@@ -55,7 +56,8 @@ namespace SciTrack.Api.Controllers
                 .Where(ts => ts.Id == id)
                 .Select(ts => new TaiSanViewDto
                 {
-                    SoDanhMuc = ts.SoDanhMuc, 
+                    Id = ts.Id,
+                    SoDanhMuc = ts.SoDanhMuc, // Số danh mục = ID
                     Ten = ts.Ten,
                     NguyenGia = ts.NguyenGia,
                     KhauHao = ts.KhauHao,

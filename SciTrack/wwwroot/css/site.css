@@ -1,40 +1,139 @@
-body {
-    display: flex;
+﻿/* ==== RESET CHUNG ==== */
+* {
+    box-sizing: border-box;
     margin: 0;
-    font-family: "Segoe UI", sans-serif;
+    padding: 0;
 }
 
-/* Sidebar */
-.sidebar {
-    width: 230px;
-    background-color: #007bff;
-    color: white;
+html, body {
+    height: 100%;
+    background-color: #f8fafc;
+    font-family: "Inter", "Segoe UI", sans-serif;
+    color: #1e293b;
+}
+
+/* ==== MAIN CONTENT ==== */
+.main-content {
+    background-color: #f8fafc;
     min-height: 100vh;
-    padding: 20px 10px;
 }
 
-    .sidebar h4 {
-        text-align: center;
-        font-size: 1.2rem;
-        margin-bottom: 1.5rem;
+/* ==== CARD ==== */
+.card {
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background-color: #fff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.card-body {
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* ==== TIÊU ĐỀ ==== */
+h5.fw-bold.text-primary {
+    font-weight: 700;
+    color: #0d6efd !important;
+}
+
+h6.fw-bold {
+    color: #0b1a39;
+    font-size: 1rem;
+}
+
+/* ==== FORM ==== */
+.form-label {
+    font-weight: 600;
+    color: #1b2e4b;
+    font-size: 0.9rem;
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #dbe3f0;
+    transition: 0.2s;
+}
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.2);
     }
 
-    .sidebar a {
-        color: white;
-        text-decoration: none;
-        display: block;
-        padding: 10px 15px;
-        border-radius: 6px;
-        transition: 0.2s;
+/* ==== BUTTONS ==== */
+.btn {
+    border-radius: 8px !important;
+    font-weight: 500;
+    padding: 6px 14px;
+}
+
+.btn-success {
+    background-color: #16a34a !important;
+    border: none !important;
+}
+
+.btn-warning {
+    background-color: #f59e0b !important;
+    border: none !important;
+}
+
+.btn-danger {
+    background-color: #dc2626 !important;
+    border: none !important;
+}
+
+.btn-secondary {
+    background-color: #6b7280 !important;
+    border: none !important;
+}
+
+/* ==== BẢNG DANH SÁCH ==== */
+.table {
+    border-radius: 12px;
+    border: 1px solid #e3e8ef;
+    overflow: hidden;
+    font-size: 0.9rem;
+}
+
+    .table th {
+        background-color: #f1f5f9;
+        color: #334155;
+        font-weight: 600;
     }
 
-        .sidebar a:hover {
-            background-color: #0099FF;
-        }
+.table-hover tbody tr:hover {
+    background-color: #eaf3ff !important;
+    transition: 0.25s ease;
+}
 
-/* Main content */
-.content {
-    flex: 1;
-    padding: 25px;
-    background-color: #f5f6fa;
+/* ==== LINK TRONG BẢNG ==== */
+.detai-link {
+    color: inherit;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+    .detai-link:hover {
+        background-color: #eaf3ff;
+    }
+
+/* ==== ALERT ==== */
+.alert {
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 12px;
+    }
+
+    .card {
+        border-radius: 10px;
+    }
+
+    .table th, .table td {
+        font-size: 0.8rem;
+    }
 }
