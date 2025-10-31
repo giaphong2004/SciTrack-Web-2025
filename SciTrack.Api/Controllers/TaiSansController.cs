@@ -137,6 +137,7 @@ namespace SciTrack.Api.Controllers
             }
 
             // Cập nhật thông tin
+            taiSan.SoDanhMuc = taiSanDto.SoDanhMuc;
             taiSan.Ten = taiSanDto.Ten;
             taiSan.NguyenGia = taiSanDto.NguyenGia;
             taiSan.KhauHao = taiSanDto.KhauHao;
