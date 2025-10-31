@@ -28,6 +28,7 @@ namespace SciTrack.Api.Controllers
                 .Select(k => new KetQuaDeTaiViewDto
                 {
                     Id = k.Id,
+                    MaKetQua = k.MaKetQua,
                     TenKetQua = k.TenKetQua,
                     PhanLoai = k.PhanLoai,
                     DinhGia = k.DinhGia,
@@ -52,6 +53,7 @@ namespace SciTrack.Api.Controllers
                 .Select(k => new KetQuaDeTaiViewDto
                 {
                     Id = k.Id,
+                    MaKetQua = k.MaKetQua,
                     TenKetQua = k.TenKetQua,
                     PhanLoai = k.PhanLoai,
                     DinhGia = k.DinhGia,

@@ -35,7 +35,6 @@ namespace SciTrack.Api.Controllers
                     NhatKySuDung = t.NhatKySuDung,
                     TinhTrangThietBi = t.TinhTrangThietBi,
                     MaThietBi = t.MaThietBi
-                    // TenDoiTac: nếu cần JOIN, xem phần dưới
                 })
                 .ToListAsync();
 
