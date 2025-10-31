@@ -5,40 +5,23 @@ namespace SciTrack.Api.Data
 {
     public class KHCN_DBContext : DbContext
     {
-        public KHCN_DBContext(DbContextOptions<KHCN_DBContext> options) : base(options)
-        {
-        }
+        public KHCN_DBContext(DbContextOptions<KHCN_DBContext> options) : base(options) { }
 
         public DbSet<HopDong> HopDongs { get; set; }
-        public DbSet<TBKHCN> TTBKHCNs { get; set; }  // Sửa tên từ ThietBis thành TTBKHCNs
+        public DbSet<TBKHCN> TTBKHCNs { get; set; }
         public DbSet<DeTai> DeTais { get; set; }
         public DbSet<KetQuaDeTai> KetQuaDeTais { get; set; }
         public DbSet<TaiSan> TaiSans { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Cấu hình mối quan hệ HDKHCN -> TTBKHCN (Một-Nhiều)
-            modelBuilder.Entity<HopDong>()
-                .HasMany(hd => hd.TTBKHCNs)  // Sửa tên thành TTBKHCNs
-                .WithOne(tb => tb.HopDong)
-                .HasForeignKey(tb => tb.MaSoHopDong)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            // Cấu hình mối quan hệ HDKHCN -> KQDT (Một-Nhiều)
-            modelBuilder.Entity<HopDong>()
-                .HasMany(hd => hd.KetQuaDeTais)
-                .WithOne(kq => kq.HopDong)
-                .HasForeignKey(kq => kq.MaSoThietBi)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            // Cấu hình mối quan hệ KQDT -> DTKHCN (Một-Nhiều)
+            // CHỈ GIỮ 2 QUAN HỆ ĐÚNG
             modelBuilder.Entity<KetQuaDeTai>()
                 .HasMany(kq => kq.DeTais)
                 .WithOne(dt => dt.KetQua)
                 .HasForeignKey(dt => dt.KetQuaDeTai)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // Cấu hình mối quan hệ DTKHCN -> TSKHCN (Một-Nhiều)
             modelBuilder.Entity<DeTai>()
                 .HasMany(dt => dt.TaiSans)
                 .WithOne(ts => ts.DeTai)

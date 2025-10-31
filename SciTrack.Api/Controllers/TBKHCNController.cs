@@ -17,15 +17,15 @@ namespace SciTrack.Api.Controllers
             _context = context;
         }
 
-        // ✅ GET ALL
+        // GET ALL
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TBKHCNViewDto>>> GetTBKHCNs()
         {
             var result = await _context.TTBKHCNs
-                .Include(t => t.HopDong)
+                .AsNoTracking()
                 .Select(t => new TBKHCNViewDto
                 {
-                    ID = t.ID,
+                    Id = t.Id,  // ← ĐÃ SỬA: ID → Id
                     TenThietBi = t.TenThietBi,
                     NgayDuaVaoSuDung = t.NgayDuaVaoSuDung,
                     NguyenGia = t.NguyenGia,
@@ -34,24 +34,24 @@ namespace SciTrack.Api.Controllers
                     DT_HD_KHCN_LienQuan = t.DT_HD_KHCN_LienQuan,
                     NhatKySuDung = t.NhatKySuDung,
                     TinhTrangThietBi = t.TinhTrangThietBi,
-                    MaSoHopDong = t.MaSoHopDong,
-                    TenDoiTac = t.HopDong != null ? t.HopDong.TenDoiTac : null
+                    MaThietBi = t.MaThietBi
+                    // TenDoiTac: nếu cần JOIN, xem phần dưới
                 })
                 .ToListAsync();
 
             return Ok(result);
         }
 
-        // ✅ GET BY ID
+        // GET BY ID
         [HttpGet("{id}")]
         public async Task<ActionResult<TBKHCNViewDto>> GetTBKHCN(int id)
         {
             var tb = await _context.TTBKHCNs
-                .Include(t => t.HopDong)
-                .Where(t => t.ID == id)
+                .AsNoTracking()
+                .Where(t => t.Id == id)  // ← ĐÃ SỬA: ID → Id
                 .Select(t => new TBKHCNViewDto
                 {
-                    ID = t.ID,
+                    Id = t.Id,  // ← ĐÃ SỬA
                     TenThietBi = t.TenThietBi,
                     NgayDuaVaoSuDung = t.NgayDuaVaoSuDung,
                     NguyenGia = t.NguyenGia,
@@ -60,8 +60,7 @@ namespace SciTrack.Api.Controllers
                     DT_HD_KHCN_LienQuan = t.DT_HD_KHCN_LienQuan,
                     NhatKySuDung = t.NhatKySuDung,
                     TinhTrangThietBi = t.TinhTrangThietBi,
-                    MaSoHopDong = t.MaSoHopDong,
-                    TenDoiTac = t.HopDong != null ? t.HopDong.TenDoiTac : null
+                    MaThietBi = t.MaThietBi
                 })
                 .FirstOrDefaultAsync();
 
@@ -71,7 +70,7 @@ namespace SciTrack.Api.Controllers
             return Ok(tb);
         }
 
-        // ✅ POST
+        // POST
         [HttpPost]
         public async Task<ActionResult<TBKHCN>> PostTBKHCN([FromBody] TBKHCNCreateDto dto)
         {
@@ -88,16 +87,16 @@ namespace SciTrack.Api.Controllers
                 DT_HD_KHCN_LienQuan = dto.DT_HD_KHCN_LienQuan,
                 NhatKySuDung = dto.NhatKySuDung,
                 TinhTrangThietBi = dto.TinhTrangThietBi,
-                MaSoHopDong = dto.MaSoHopDong
+                MaThietBi = dto.MaThietBi
             };
 
             _context.TTBKHCNs.Add(tb);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetTBKHCN), new { id = tb.ID }, tb);
+            return CreatedAtAction(nameof(GetTBKHCN), new { id = tb.Id }, tb); // ← Id
         }
 
-        // ✅ PUT
+        // PUT
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTBKHCN(int id, [FromBody] TBKHCNCreateDto dto)
         {
@@ -108,7 +107,6 @@ namespace SciTrack.Api.Controllers
             if (tb == null)
                 return NotFound();
 
-            // Gán lại các cột được phép chỉnh
             tb.TenThietBi = dto.TenThietBi;
             tb.NgayDuaVaoSuDung = dto.NgayDuaVaoSuDung;
             tb.NguyenGia = dto.NguyenGia;
@@ -117,14 +115,14 @@ namespace SciTrack.Api.Controllers
             tb.DT_HD_KHCN_LienQuan = dto.DT_HD_KHCN_LienQuan;
             tb.NhatKySuDung = dto.NhatKySuDung;
             tb.TinhTrangThietBi = dto.TinhTrangThietBi;
-            tb.MaSoHopDong = dto.MaSoHopDong;
+            tb.MaThietBi = dto.MaThietBi;
 
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // ✅ DELETE
+        // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTBKHCN(int id)
         {

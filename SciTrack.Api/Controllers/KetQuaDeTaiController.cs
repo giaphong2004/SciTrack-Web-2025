@@ -24,7 +24,6 @@ namespace SciTrack.Api.Controllers
         public async Task<ActionResult<IEnumerable<KetQuaDeTaiViewDto>>> GetKetQuaDeTais()
         {
             var ketQuas = await _context.KetQuaDeTais
-                .Include(k => k.HopDong)
                 .AsNoTracking()
                 .Select(k => new KetQuaDeTaiViewDto
                 {
@@ -34,9 +33,7 @@ namespace SciTrack.Api.Controllers
                     DinhGia = k.DinhGia,
                     GiaTriConLai = k.GiaTriConLai,
                     CacHopDong = k.CacHopDong,
-                    NgayCapNhatTaiSan = k.NgayCapNhatTaiSan,
-                    MaSoThietBi = k.MaSoThietBi,
-                    TenHopDong = k.HopDong != null ? k.HopDong.TenDoiTac : "Không có hợp đồng"
+                    NgayCapNhatTaiSan = k.NgayCapNhatTaiSan
                 })
                 .ToListAsync();
 
@@ -50,7 +47,6 @@ namespace SciTrack.Api.Controllers
         public async Task<ActionResult<KetQuaDeTaiViewDto>> GetKetQuaDeTai(int id)
         {
             var ketQuaDto = await _context.KetQuaDeTais
-                .Include(k => k.HopDong)
                 .AsNoTracking()
                 .Where(k => k.Id == id)
                 .Select(k => new KetQuaDeTaiViewDto
@@ -61,9 +57,7 @@ namespace SciTrack.Api.Controllers
                     DinhGia = k.DinhGia,
                     GiaTriConLai = k.GiaTriConLai,
                     CacHopDong = k.CacHopDong,
-                    NgayCapNhatTaiSan = k.NgayCapNhatTaiSan,
-                    MaSoThietBi = k.MaSoThietBi,
-                    TenHopDong = k.HopDong != null ? k.HopDong.TenDoiTac : "Không có hợp đồng"
+                    NgayCapNhatTaiSan = k.NgayCapNhatTaiSan
                 })
                 .FirstOrDefaultAsync();
 
@@ -79,42 +73,29 @@ namespace SciTrack.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> PostKetQuaDeTai(KetQuaDeTaiCreateDto dto)
         {
+            // Kiểm tra trùng mã kết quả
+            var exists = await _context.KetQuaDeTais.AnyAsync(k => k.MaKetQua == dto.MaKetQua);
+            if (exists)
+                return BadRequest(new { message = $"Mã kết quả {dto.MaKetQua} đã tồn tại." });
+
             var newKetQua = new KetQuaDeTai
             {
+                MaKetQua = dto.MaKetQua,
                 TenKetQua = dto.TenKetQua,
                 PhanLoai = dto.PhanLoai,
                 DinhGia = dto.DinhGia,
                 GiaTriConLai = dto.GiaTriConLai,
                 CacHopDong = dto.CacHopDong,
                 NgayCapNhatTaiSan = dto.NgayCapNhatTaiSan ?? DateTime.Now,
-                MaSoThietBi = dto.MaSoThietBi
             };
 
             _context.KetQuaDeTais.Add(newKetQua);
             await _context.SaveChangesAsync();
 
-            string? tenHopDong = null;
-            if (newKetQua.MaSoThietBi.HasValue)
-            {
-                var hopDong = await _context.HopDongs
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(hd => hd.Id == newKetQua.MaSoThietBi.Value);
-                tenHopDong = hopDong?.TenDoiTac;
-            }
-
             return CreatedAtAction(nameof(GetKetQuaDeTai), new { id = newKetQua.Id },
-                new
-                {
-                    message = "Tạo kết quả đề tài thành công",
-                    data = new
-                    {
-                        id = newKetQua.Id,
-                        tenKetQua = newKetQua.TenKetQua,
-                        maSoThietBi = newKetQua.MaSoThietBi,
-                        tenHopDong
-                    }
-                });
+                new { message = "Tạo kết quả đề tài thành công", data = newKetQua });
         }
+
 
         // =========================
         // PUT: api/KetQuaDeTai/{id}
@@ -126,36 +107,18 @@ namespace SciTrack.Api.Controllers
             if (ketQua == null)
                 return NotFound(new { message = $"Không tìm thấy kết quả với ID = {id}" });
 
+            ketQua.MaKetQua = dto.MaKetQua;
             ketQua.TenKetQua = dto.TenKetQua;
             ketQua.PhanLoai = dto.PhanLoai;
             ketQua.DinhGia = dto.DinhGia;
             ketQua.GiaTriConLai = dto.GiaTriConLai;
             ketQua.CacHopDong = dto.CacHopDong;
             ketQua.NgayCapNhatTaiSan = dto.NgayCapNhatTaiSan ?? DateTime.Now;
-            ketQua.MaSoThietBi = dto.MaSoThietBi;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "Cập nhật kết quả đề tài thành công" });
-            }
-            catch (DbUpdateException ex)
-            {
-                if (ex.InnerException != null && ex.InnerException.Message.Contains("REFERENCE"))
-                {
-                    return BadRequest(new
-                    {
-                        message = "Không thể cập nhật vì dữ liệu liên quan đang được tham chiếu."
-                    });
-                }
-
-                return StatusCode(500, new
-                {
-                    message = "Lỗi trong quá trình cập nhật kết quả đề tài.",
-                    detail = ex.Message
-                });
-            }
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Cập nhật kết quả đề tài thành công" });
         }
+
 
         // =========================
         // DELETE: api/KetQuaDeTai/{id}

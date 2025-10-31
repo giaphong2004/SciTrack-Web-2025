@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SciTrack.Api.Models
@@ -8,7 +10,11 @@ namespace SciTrack.Api.Models
     {
         [Key]
         [Column("ID")]
-        public int Id { get; set; }
+        public int Id { get; set; }  // Khóa chính tự tăng (PK)
+
+        [Column("MaKetQua")]
+        [StringLength(50)]
+        public string? MaKetQua { get; set; }  
 
         [Required]
         [Column("TenKetQua")]
@@ -29,13 +35,7 @@ namespace SciTrack.Api.Models
         [Column("NgayCapNhatTaiSan")]
         public DateTime? NgayCapNhatTaiSan { get; set; }
 
-        [Column("MaSoThietBi")]
-        public int? MaSoThietBi { get; set; }
-
-        [ForeignKey("MaSoThietBi")]
-        public virtual HopDong? HopDong { get; set; }  // Liên kết với HDKHCN
-
-        // ✅ Quan hệ 1-N với DeTai
+        // Quan hệ 1-N với Đề tài
         public virtual ICollection<DeTai> DeTais { get; set; } = new List<DeTai>();
     }
 }

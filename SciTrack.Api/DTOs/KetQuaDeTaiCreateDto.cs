@@ -1,25 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SciTrack.Api.DTOs
+public class KetQuaDeTaiCreateDto
 {
-    /// <summary>
-    /// DTO dùng để tạo/cập nhật kết quả đề tài (INPUT)
-    /// </summary>
-    public class KetQuaDeTaiCreateDto
-    {
-        [Required(ErrorMessage = "Tên kết quả là bắt buộc")]
-        public string TenKetQua { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Mã kết quả là bắt buộc")]
+    public string MaKetQua { get; set; } = string.Empty; // 🔥 mã hiển thị
 
-        public string? PhanLoai { get; set; }
+    [Required(ErrorMessage = "Tên kết quả là bắt buộc")]
+    public string TenKetQua { get; set; } = string.Empty;
 
-        public decimal? DinhGia { get; set; }
-
-        public decimal? GiaTriConLai { get; set; }
-
-        public string? CacHopDong { get; set; }
-
-        public DateTime? NgayCapNhatTaiSan { get; set; }
-
-        public int? MaSoThietBi { get; set; }  // ID của hợp đồng
-    }
+    public string? PhanLoai { get; set; }
+    public decimal? DinhGia { get; set; }
+    public decimal? GiaTriConLai { get; set; }
+    public string? CacHopDong { get; set; }
+    public DateTime? NgayCapNhatTaiSan { get; set; }
 }
