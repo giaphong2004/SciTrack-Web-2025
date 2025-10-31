@@ -15,7 +15,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
     <!-- ✅ CSS riêng -->
-
     <link href="~/css/sitebar.css" rel="stylesheet" />
 </head>
 
@@ -39,7 +38,7 @@
             <i class="bi bi-trophy me-2"></i> <span>Kết quả đề tài</span>
         </a>
 
-        <a asp-controller="TinhTrang" asp-action="Index" class="@(ViewData["Active"] == "TinhTrang" ? "active" : "")">
+        <a asp-controller="ThietBi" asp-action="Index" class="@(ViewData["Active"] == "ThietBi" ? "active" : "")">
             <i class="bi bi-wrench-adjustable-circle me-2"></i> <span>Tình trạng thiết bị</span>
         </a>
 
