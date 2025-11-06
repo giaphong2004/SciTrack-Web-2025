@@ -1,42 +1,41 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("HDKHCN")]
-public class HopDong
+namespace SciTrack.Api.Models
 {
-    [Key]
-    [Column("ID")]
-    public int Id { get; set; }
+    [Table("HDKHCN")] // ánh xạ tới bảng trong database
+    public class HopDong
+    {
+        [Key]
+        [Column("ID")]
+        public int Id { get; set; }
 
-    [Column("TenDoiTac")]
-    [Required]
-    public string TenDoiTac { get; set; } = string.Empty;
+        [StringLength(255)]
+        public string TenDoiTac { get; set; }
 
-    [Column("NgayHieuLuc")]
-    public DateTime? NgayHieuLuc { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime? NgayHieuLuc { get; set; }
 
-    [Column("NgayNghiemThu")]
-    public DateTime? NgayNghiemThu { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime? NgayNghiemThu { get; set; }
 
-    [Column("TongGiaTriHopDong")]
-    public decimal? TongGiaTriHopDong { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? TongGiaTriHopDong { get; set; }
 
-    [Column("ChiPhiKetQuaDeTai")]
-    public decimal? ChiPhiKetQuaDeTai { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? ChiPhiKetQuaDeTai { get; set; }
 
-    [Column("ChiPhiTrangThietBi")]
-    public decimal? ChiPhiTrangThietBi { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? ChiPhiTrangThietBi { get; set; }
 
-    [Column("ChiPhiHoatDongChuyenMon")]
-    public decimal? ChiPhiHoatDongChuyenMon { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? ChiPhiHoatDongChuyenMon { get; set; }
 
-    [Column("LoiNhuan")]
-    public decimal? LoiNhuan { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? LoiNhuan { get; set; }
 
-    [Column("GhiChu")]
-    public string? GhiChu { get; set; }
-
-    // XÓA HOÀN TOÀN:
-    // public virtual ICollection<KetQuaDeTai> KetQuaDeTais { get; set; } = new List<KetQuaDeTai>();
-    // public virtual ICollection<TBKHCN> TTBKHCNs { get; set; } = new List<TBKHCN>();
+        [StringLength(50)]
+        public string? MaHopDong { get; set; }
+    }
 }
