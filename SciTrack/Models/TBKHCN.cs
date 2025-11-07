@@ -1,0 +1,20 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SciTrack.web.Models
+{
+    public class TBKHCN
+    {
+        public int Id { get; set; }
+        public string TenThietBi { get; set; } = string.Empty;
+        public DateTime? NgayDuaVaoSuDung { get; set; }
+        public decimal? NguyenGia { get; set; }
+        public decimal? KhauHao { get; set; }
+        public decimal? GiaTriConLai { get; set; }
+        public string? DT_HD_KHCN_LienQuan { get; set; }
+        public string? NhatKySuDung { get; set; }
+        public string? TinhTrangThietBi { get; set; }
+        public string? MaThietBi { get; set; }  
+
+    }
+}

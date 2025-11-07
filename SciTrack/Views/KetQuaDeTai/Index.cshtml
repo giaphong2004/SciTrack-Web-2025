@@ -1,0 +1,177 @@
+﻿@model List<SciTrack.web.Models.KetQuaDeTai>
+@{
+    ViewData["Title"] = "Kết Quả KHCN";
+    ViewData["Active"] = "KetQuaDeTai";
+    var selected = ViewBag.Selected as SciTrack.web.Models.KetQuaDeTai;
+}
+
+<div class="flex-fill p-4">
+    <h5 class="fw-bold text-primary mb-1">
+        <i class="bi bi-trophy me-2"></i>Phần mềm quản lý KH&CN — Quản lý kết quả đề tài
+    </h5>
+    <h6 class="fw-bold mb-3 text-muted">KQDTKHCN - Kết quả đề tài KHCN (chi tiết)</h6>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="bi bi-info-circle me-2"></i>@TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    <div class="card shadow-sm border-0 rounded-3 mt-3">
+        <div class="card-body p-4">
+            <div class="row">
+                <!-- 🟩 FORM NHẬP LIỆU BÊN TRÁI -->
+                <div class="col-lg-7 col-md-6 mb-4 mb-md-0">
+                    <h6 class="fw-bold mb-3 text-primary">
+                        <i class="bi bi-pencil-square me-2"></i>Thông tin kết quả
+                    </h6>
+
+                    <form asp-controller="KetQuaDeTai" method="post">
+                        <input type="hidden" name="Id" value="@(selected?.Id ?? 0)" />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Mã số kết quả (ID3.0)</label>
+                            <input type="text" name="MaKetQua" class="form-control"
+                                   value="@(selected?.MaKetQua ?? "")"
+                                   placeholder="Mã kết quả" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tên của kết quả (ID3.1)</label>
+                            <input type="text" name="TenKetQua" class="form-control"
+                                   value="@(selected?.TenKetQua ?? "")"
+                                   placeholder="Tên kết quả" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Phân loại (ID3.2)</label>
+                            <input type="text" name="PhanLoai" class="form-control"
+                                   value="@(selected?.PhanLoai ?? "")"
+                                   placeholder="Phân loại" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Định giá (ID3.3)</label>
+                                <input type="number" name="DinhGia" class="form-control"
+                                       value="@((selected?.DinhGia ?? 0).ToString())"
+                                       placeholder="0" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Ngày cập nhật (ID3.6)</label>
+                                <input type="date" name="NgayCapNhatTaiSan" class="form-control"
+                                       value="@(selected?.NgayCapNhatTaiSan?.ToString("yyyy-MM-dd") ?? "")" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Giá trị còn lại (ID3.4)</label>
+                            <input type="number" name="GiaTriConLai" class="form-control"
+                                   value="@((selected?.GiaTriConLai ?? 0).ToString())"
+                                   placeholder="0" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Các hợp đồng sử dụng kết quả (ID3.5)</label>
+                            <textarea name="CacHopDong" class="form-control" rows="2"
+                                      placeholder="Nhập các hợp đồng sử dụng">@selected?.CacHopDong</textarea>
+                        </div>
+                        <div class="mt-4 d-flex flex-wrap gap-2">
+                            <button type="submit" formaction="/KetQuaDeTai/Create" class="btn btn-success">
+                                <i class="bi bi-plus-circle me-1"></i>Thêm
+                            </button>
+
+                            <button type="submit" formaction="/KetQuaDeTai/Update" class="btn btn-warning text-white">
+                                <i class="bi bi-pencil-square me-1"></i>Sửa
+                            </button>
+
+                            <button type="submit" formaction="/KetQuaDeTai/Delete" class="btn btn-danger">
+                                <i class="bi bi-trash me-1"></i>Xóa
+                            </button>
+
+                            <button type="button" class="btn btn-secondary">
+                                <i class="bi bi-printer me-1"></i>In
+                            </button>
+
+                            <a href="/TBKHCN/Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Làm mới
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 🟦 DANH SÁCH BÊN PHẢI -->
+                <div class="col-lg-5 col-md-6">
+                    <h6 class="fw-bold mb-3 text-primary">
+                        <i class="bi bi-list-ul me-2"></i>Danh sách kết quả đề tài KHCN
+                    </h6>
+                    <div class="table-responsive border rounded" style="max-height: 600px; overflow-y: auto;">
+                        <table class="table table-hover table-sm table-bordered align-middle mb-0">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th class="fw-semibold text-center" style="width: 15%;">Mã</th>
+                                    <th class="fw-semibold" style="width: 50%;">Tên đề tài</th>
+                                    <th class="fw-semibold text-center" style="width: 35%;">Phân loại</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var dt in Model)
+                                    {
+                                        <tr class="@(selected?.Id == dt.Id ? "table-active" : "")">
+                                            <!-- Cột Mã -->
+                                            <td class="text-center">
+                                                <a asp-controller="KetQuaDeTai"
+                                                   asp-action="Index"
+                                                   asp-route-id="@dt.Id"
+                                                   class="text-primary fw-bold text-decoration-none">
+                                                    @dt.Id
+                                                </a>
+                                            </td>
+
+                                            <!-- Cột Tên đề tài -->
+                                            <td>
+                                                <a asp-controller="KetQuaDeTai"
+                                                   asp-action="Index"
+                                                   asp-route-id="@dt.Id"
+                                                   class="text-dark text-decoration-none">
+                                                    @dt.TenKetQua
+                                                </a>
+                                            </td>
+
+                                            <!-- Cột Phân loại -->
+                                            <td class="text-center">
+                                                <a asp-controller="TBKHCN"
+                                                   asp-action="Index"
+                                                   asp-route-id="@dt.Id"
+                                                   class="text-success text-decoration-none">
+                                                        @dt.PhanLoai
+                                                    
+                                                </a>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-4">
+                                            <i class="bi bi-inbox fs-1"></i>
+                                            <p class="mb-0 mt-2">Chưa có dữ liệu đề tài</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>Nhấn vào hàng để xem chi tiết và chỉnh sửa
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
