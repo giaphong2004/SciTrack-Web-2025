@@ -10,9 +10,9 @@ namespace SciTrack.Api.Controllers
     [ApiController]
     public class TBKHCNController : ControllerBase
     {
-        private readonly KHCN_DBContext _context;
+        private readonly KhcnDbNewContext _context;
 
-        public TBKHCNController(KHCN_DBContext context)
+        public TBKHCNController(KhcnDbNewContext context)
         {
             _context = context;
         }
@@ -21,17 +21,17 @@ namespace SciTrack.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TBKHCNViewDto>>> GetTBKHCNs()
         {
-            var result = await _context.TTBKHCNs
+            var result = await _context.Ttbkhcns
                 .AsNoTracking()
                 .Select(t => new TBKHCNViewDto
                 {
-                    Id = t.Id,  // ← ĐÃ SỬA: ID → Id
+                    Id = t.Id,
                     TenThietBi = t.TenThietBi,
                     NgayDuaVaoSuDung = t.NgayDuaVaoSuDung,
                     NguyenGia = t.NguyenGia,
                     KhauHao = t.KhauHao,
                     GiaTriConLai = t.GiaTriConLai,
-                    DT_HD_KHCN_LienQuan = t.DT_HD_KHCN_LienQuan,
+                    DT_HD_KHCN_LienQuan = t.DtHdKhcnLienQuan,
                     NhatKySuDung = t.NhatKySuDung,
                     TinhTrangThietBi = t.TinhTrangThietBi,
                     MaThietBi = t.MaThietBi
@@ -45,18 +45,18 @@ namespace SciTrack.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TBKHCNViewDto>> GetTBKHCN(int id)
         {
-            var tb = await _context.TTBKHCNs
+            var tb = await _context.Ttbkhcns
                 .AsNoTracking()
-                .Where(t => t.Id == id)  // ← ĐÃ SỬA: ID → Id
+                .Where(t => t.Id == id)
                 .Select(t => new TBKHCNViewDto
                 {
-                    Id = t.Id,  // ← ĐÃ SỬA
+                    Id = t.Id,
                     TenThietBi = t.TenThietBi,
                     NgayDuaVaoSuDung = t.NgayDuaVaoSuDung,
                     NguyenGia = t.NguyenGia,
                     KhauHao = t.KhauHao,
                     GiaTriConLai = t.GiaTriConLai,
-                    DT_HD_KHCN_LienQuan = t.DT_HD_KHCN_LienQuan,
+                    DT_HD_KHCN_LienQuan = t.DtHdKhcnLienQuan,
                     NhatKySuDung = t.NhatKySuDung,
                     TinhTrangThietBi = t.TinhTrangThietBi,
                     MaThietBi = t.MaThietBi
@@ -71,28 +71,28 @@ namespace SciTrack.Api.Controllers
 
         // POST
         [HttpPost]
-        public async Task<ActionResult<TBKHCN>> PostTBKHCN([FromBody] TBKHCNCreateDto dto)
+        public async Task<ActionResult<Ttbkhcn>> PostTBKHCN([FromBody] TBKHCNCreateDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var tb = new TBKHCN
+            var tb = new Ttbkhcn
             {
                 TenThietBi = dto.TenThietBi,
                 NgayDuaVaoSuDung = dto.NgayDuaVaoSuDung,
                 NguyenGia = dto.NguyenGia,
                 KhauHao = dto.KhauHao,
                 GiaTriConLai = dto.GiaTriConLai,
-                DT_HD_KHCN_LienQuan = dto.DT_HD_KHCN_LienQuan,
+                DtHdKhcnLienQuan = dto.DT_HD_KHCN_LienQuan,
                 NhatKySuDung = dto.NhatKySuDung,
                 TinhTrangThietBi = dto.TinhTrangThietBi,
                 MaThietBi = dto.MaThietBi
             };
 
-            _context.TTBKHCNs.Add(tb);
+            _context.Ttbkhcns.Add(tb);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetTBKHCN), new { id = tb.Id }, tb); // ← Id
+            return CreatedAtAction(nameof(GetTBKHCN), new { id = tb.Id }, tb);
         }
 
         // PUT
@@ -102,7 +102,7 @@ namespace SciTrack.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var tb = await _context.TTBKHCNs.FindAsync(id);
+            var tb = await _context.Ttbkhcns.FindAsync(id);
             if (tb == null)
                 return NotFound();
 
@@ -111,7 +111,7 @@ namespace SciTrack.Api.Controllers
             tb.NguyenGia = dto.NguyenGia;
             tb.KhauHao = dto.KhauHao;
             tb.GiaTriConLai = dto.GiaTriConLai;
-            tb.DT_HD_KHCN_LienQuan = dto.DT_HD_KHCN_LienQuan;
+            tb.DtHdKhcnLienQuan = dto.DT_HD_KHCN_LienQuan;
             tb.NhatKySuDung = dto.NhatKySuDung;
             tb.TinhTrangThietBi = dto.TinhTrangThietBi;
             tb.MaThietBi = dto.MaThietBi;
@@ -125,13 +125,13 @@ namespace SciTrack.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTBKHCN(int id)
         {
-            var tb = await _context.TTBKHCNs.FindAsync(id);
+            var tb = await _context.Ttbkhcns.FindAsync(id);
             if (tb == null)
                 return NotFound();
 
             try
             {
-                _context.TTBKHCNs.Remove(tb);
+                _context.Ttbkhcns.Remove(tb);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)

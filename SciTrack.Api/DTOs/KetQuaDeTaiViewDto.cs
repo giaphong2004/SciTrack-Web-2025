@@ -14,7 +14,6 @@ namespace SciTrack.Api.DTOs
         public decimal? DinhGia { get; set; }
         public decimal? GiaTriConLai { get; set; }
         public string? CacHopDong { get; set; }
-        public DateTime? NgayCapNhatTaiSan { get; set; }
+        public DateOnly? NgayCapNhatTaiSan { get; set; }
     }
-
 }

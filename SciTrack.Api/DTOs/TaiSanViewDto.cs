@@ -13,7 +13,7 @@
         public decimal? HaoMon { get; set; }
         public decimal? GiaTriConLai { get; set; }
         public string? TrangThaiTaiSan { get; set; }
-        public DateTime? NgayCapNhat { get; set; }
+        public DateOnly? NgayCapNhat { get; set; }
         public string? MaDeTaiKHCN { get; set; }  // Mã đề tài (ID)
     }
 }

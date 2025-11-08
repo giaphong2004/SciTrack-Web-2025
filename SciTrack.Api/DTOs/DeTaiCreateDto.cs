@@ -9,7 +9,7 @@ namespace SciTrack.Api.DTOs
 
         public string? MaSoDeTai { get; set; }
 
-        public DateTime? NgayCapNhatTaiSan { get; set; }
+        public DateOnly? NgayCapNhatTaiSan { get; set; }
 
         public string? CacQuyetDinhLienQuan { get; set; }
 

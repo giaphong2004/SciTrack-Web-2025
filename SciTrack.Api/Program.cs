@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Cấu hình kết nối Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<KHCN_DBContext>(options =>
+builder.Services.AddDbContext<KhcnDbNewContext>(options =>
     options.UseSqlServer(connectionString));
 
 // 2. Cấu hình Controller và NewtonsoftJson để xử lý vòng lặp
