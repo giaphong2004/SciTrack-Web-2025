@@ -9,7 +9,7 @@ namespace SciTrack.Api.DTOs
 
         public string? MaSoDeTai { get; set; }
 
-        public DateTime? NgayCapNhatTaiSan { get; set; }
+        public DateOnly? NgayCapNhatTaiSan { get; set; }
 
         public string? CacQuyetDinhLienQuan { get; set; }
 
@@ -23,8 +23,7 @@ namespace SciTrack.Api.DTOs
 
         public string? QuyetDinhXuLyTaiSan { get; set; }
 
-        // --- Ở BÊN DTO NÀY MÌNH GIỮ NGUYÊN KetQuaDeTai ---
-        public string? KetQuaDeTai { get; set; }
-        // -------------------------
+        // ID của kết quả đề tài đã có sẵn (chọn từ dropdown)
+        public int? KetQuaDeTai { get; set; }
     }
 }

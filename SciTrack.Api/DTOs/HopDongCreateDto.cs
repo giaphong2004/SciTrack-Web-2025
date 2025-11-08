@@ -9,8 +9,8 @@ namespace SciTrack.Api.DTOs
         [MaxLength(255)]
         public string TenDoiTac { get; set; }
 
-        public DateTime? NgayHieuLuc { get; set; }
-        public DateTime? NgayNghiemThu { get; set; }
+        public DateOnly? NgayHieuLuc { get; set; }
+        public DateOnly? NgayNghiemThu { get; set; }
 
         public decimal? TongGiaTriHopDong { get; set; }
         public decimal? ChiPhiKetQuaDeTai { get; set; }

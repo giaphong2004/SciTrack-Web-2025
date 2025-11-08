@@ -10,9 +10,9 @@ namespace SciTrack.Api.Controllers
     [ApiController]
     public class TaiSansController : ControllerBase
     {
-        private readonly KHCN_DBContext _context;
+        private readonly KhcnDbNewContext _context;
 
-        public TaiSansController(KHCN_DBContext context)
+        public TaiSansController(KhcnDbNewContext context)
         {
             _context = context;
         }
@@ -23,13 +23,13 @@ namespace SciTrack.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaiSanViewDto>>> GetTaiSans()
         {
-            var taiSans = await _context.TaiSans
-                .Include(ts => ts.DeTai)
+            var taiSans = await _context.Tskhcns
+                .Include(ts => ts.MaSoDeTaiKhcnNavigation)
                 .AsNoTracking()
                 .Select(ts => new TaiSanViewDto
                 {
                     Id = ts.Id,
-                    SoDanhMuc = ts.SoDanhMuc, // Số danh mục = ID
+                    SoDanhMuc = ts.SoDanhMuc,
                     Ten = ts.Ten,
                     NguyenGia = ts.NguyenGia,
                     KhauHao = ts.KhauHao,
@@ -37,7 +37,7 @@ namespace SciTrack.Api.Controllers
                     GiaTriConLai = ts.GiaTriConLai,
                     TrangThaiTaiSan = ts.TrangThaiTaiSan,
                     NgayCapNhat = ts.NgayCapNhat,
-                    MaDeTaiKHCN = ts.MaSoDeTaiKHCN.HasValue ? ts.MaSoDeTaiKHCN.Value.ToString() : null,
+                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn  // Trả về ID trực tiếp
                 })
                 .ToListAsync();
 
@@ -50,14 +50,14 @@ namespace SciTrack.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TaiSanViewDto>> GetTaiSan(int id)
         {
-            var taiSanDto = await _context.TaiSans
-                .Include(ts => ts.DeTai)
+            var taiSanDto = await _context.Tskhcns
+                .Include(ts => ts.MaSoDeTaiKhcnNavigation)
                 .AsNoTracking()
                 .Where(ts => ts.Id == id)
                 .Select(ts => new TaiSanViewDto
                 {
                     Id = ts.Id,
-                    SoDanhMuc = ts.SoDanhMuc, // Số danh mục = ID
+                    SoDanhMuc = ts.SoDanhMuc,
                     Ten = ts.Ten,
                     NguyenGia = ts.NguyenGia,
                     KhauHao = ts.KhauHao,
@@ -65,7 +65,7 @@ namespace SciTrack.Api.Controllers
                     GiaTriConLai = ts.GiaTriConLai,
                     TrangThaiTaiSan = ts.TrangThaiTaiSan,
                     NgayCapNhat = ts.NgayCapNhat,
-                    MaDeTaiKHCN = ts.MaSoDeTaiKHCN.HasValue ? ts.MaSoDeTaiKHCN.Value.ToString() : null,
+                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn  // Trả về ID trực tiếp
                 })
                 .FirstOrDefaultAsync();
 
@@ -81,9 +81,9 @@ namespace SciTrack.Api.Controllers
         /// POST: api/TaiSans - Tạo mới một tài sản
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<TaiSan>> PostTaiSan(TaiSanCreateDto taiSanDto)
+        public async Task<ActionResult<Tskhcn>> PostTaiSan(TaiSanCreateDto taiSanDto)
         {
-            var newTaiSan = new TaiSan
+            var newTaiSan = new Tskhcn
             {
                 SoDanhMuc = taiSanDto.SoDanhMuc,
                 Ten = taiSanDto.Ten,
@@ -92,22 +92,21 @@ namespace SciTrack.Api.Controllers
                 HaoMon = taiSanDto.HaoMon,
                 GiaTriConLai = taiSanDto.GiaTriConLai,
                 TrangThaiTaiSan = taiSanDto.TrangThaiTaiSan,
-                NgayCapNhat = taiSanDto.NgayCapNhat ?? DateTime.Now,
-                MaSoDeTaiKHCN = taiSanDto.MaDeTaiKHCN,
-                MaSoDeTaiKHCN2 = taiSanDto.MaDeTaiKHCN
+                NgayCapNhat = taiSanDto.NgayCapNhat,
+                MaSoDeTaiKhcn = taiSanDto.MaDeTaiKHCN
             };
 
-            _context.TaiSans.Add(newTaiSan);
+            _context.Tskhcns.Add(newTaiSan);
             await _context.SaveChangesAsync();
 
             // Lấy thông tin đề tài nếu có
             string? tenDeTai = null;
-            if (newTaiSan.MaSoDeTaiKHCN.HasValue)
+            if (newTaiSan.MaSoDeTaiKhcn.HasValue)
             {
-                var deTai = await _context.DeTais
+                var deTai = await _context.Dtkhcns
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(dt => dt.Id == newTaiSan.MaSoDeTaiKHCN.Value);
-                tenDeTai = deTai?.TenDTKHCN;
+                    .FirstOrDefaultAsync(dt => dt.Id == newTaiSan.MaSoDeTaiKhcn.Value);
+                tenDeTai = deTai?.TenDtkhcn;
             }
 
             return CreatedAtAction(
@@ -115,9 +114,9 @@ namespace SciTrack.Api.Controllers
                 new { id = newTaiSan.Id },
                 new
                 {
-                    soDanhMuc = newTaiSan.Id.ToString(),
+                    soDanhMuc = newTaiSan.SoDanhMuc,
                     ten = newTaiSan.Ten,
-                    maDeTaiKHCN = newTaiSan.MaSoDeTaiKHCN?.ToString(),
+                    maDeTaiKHCN = newTaiSan.MaSoDeTaiKhcn?.ToString(),
                     tenDeTaiKHCN = tenDeTai,
                     message = "Tạo tài sản thành công"
                 }
@@ -130,7 +129,7 @@ namespace SciTrack.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTaiSan(int id, TaiSanCreateDto taiSanDto)
         {
-            var taiSan = await _context.TaiSans.FindAsync(id);
+            var taiSan = await _context.Tskhcns.FindAsync(id);
             if (taiSan == null)
             {
                 return NotFound(new { message = $"Không tìm thấy tài sản với ID = {id}" });
@@ -144,9 +143,8 @@ namespace SciTrack.Api.Controllers
             taiSan.HaoMon = taiSanDto.HaoMon;
             taiSan.GiaTriConLai = taiSanDto.GiaTriConLai;
             taiSan.TrangThaiTaiSan = taiSanDto.TrangThaiTaiSan;
-            taiSan.NgayCapNhat = taiSanDto.NgayCapNhat ?? DateTime.Now;
-            taiSan.MaSoDeTaiKHCN = taiSanDto.MaDeTaiKHCN;
-            taiSan.MaSoDeTaiKHCN2 = taiSanDto.MaDeTaiKHCN;
+            taiSan.NgayCapNhat = taiSanDto.NgayCapNhat;
+            taiSan.MaSoDeTaiKhcn = taiSanDto.MaDeTaiKHCN;
 
             _context.Entry(taiSan).State = EntityState.Modified;
 
@@ -156,7 +154,7 @@ namespace SciTrack.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.TaiSans.Any(e => e.Id == id))
+                if (!_context.Tskhcns.Any(e => e.Id == id))
                 {
                     return NotFound(new { message = $"Không tìm thấy tài sản với ID = {id}" });
                 }
@@ -175,13 +173,13 @@ namespace SciTrack.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaiSan(int id)
         {
-            var taiSan = await _context.TaiSans.FindAsync(id);
+            var taiSan = await _context.Tskhcns.FindAsync(id);
             if (taiSan == null)
             {
                 return NotFound(new { message = $"Không tìm thấy tài sản với ID = {id}" });
             }
 
-            _context.TaiSans.Remove(taiSan);
+            _context.Tskhcns.Remove(taiSan);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Xóa tài sản thành công" });

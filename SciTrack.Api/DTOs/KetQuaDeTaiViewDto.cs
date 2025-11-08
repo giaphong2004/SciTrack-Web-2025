@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SciTrack.Api.DTOs
 {
@@ -13,8 +14,8 @@ namespace SciTrack.Api.DTOs
         public string? PhanLoai { get; set; }
         public decimal? DinhGia { get; set; }
         public decimal? GiaTriConLai { get; set; }
-        public string? CacHopDong { get; set; }
-        public DateTime? NgayCapNhatTaiSan { get; set; }
+        public string? CacHopDong { get; set; }  // Tên hợp đồng (text) - backward compatible
+        public List<int>? HopDongIds { get; set; }  // Danh sách ID hợp đồng
+        public DateOnly? NgayCapNhatTaiSan { get; set; }
     }
-
 }

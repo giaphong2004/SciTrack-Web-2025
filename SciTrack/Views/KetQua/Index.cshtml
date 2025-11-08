@@ -1,6 +1,9 @@
-﻿@{
+﻿@model List<SciTrack.web.Models.KetQua>
+@{
     ViewData["Title"] = "Kết Quả KHCN";
     ViewData["Active"] = "KetQua";
+    var selected = ViewBag.Selected as SciTrack.web.Models.KetQua;
+    var hopDongList = ViewBag.HopDongList as List<SciTrack.web.Models.HopDong> ?? new List<SciTrack.web.Models.HopDong>();
 }
 
 <div class="flex-fill p-4">
@@ -8,6 +11,14 @@
         <i class="bi bi-trophy me-2"></i>Phần mềm quản lý KH&CN — Quản lý kết quả đề tài
     </h5>
     <h6 class="fw-bold mb-3 text-muted">KQDTKHCN - Kết quả đề tài KHCN (chi tiết)</h6>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="bi bi-info-circle me-2"></i>@TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
 
     <div class="card shadow-sm border-0 rounded-3 mt-3">
         <div class="card-body p-4">
@@ -18,59 +29,131 @@
                         <i class="bi bi-pencil-square me-2"></i>Thông tin kết quả
                     </h6>
                     
-                        <form>
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Mã số kết quả (ID3.0)</label>
-                                <input type="text" class="form-control" placeholder="Mã kết quả" />
-                            </div>
+                    <form method="post">
+                        <input type="hidden" name="Id" value="@(selected?.Id ?? 0)" />
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Tên của kết quả (ID3.1)</label>
-                                <input type="text" class="form-control" placeholder="Tên kết quả" />
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Mã số kết quả (ID3.0)</label>
+                            <input type="text" name="MaKetQua" class="form-control" 
+                                   value="@(selected?.MaKetQua ?? "")"
+                                   placeholder="Nhập mã kết quả (VD: KQ001)" required />
+                        </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Phân loại (ID3.2)</label>
-                                <input type="text" class="form-control" placeholder="Phân loại" />
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tên của kết quả (ID3.1) <span class="text-danger">*</span></label>
+                            <input type="text" name="TenKetQua" class="form-control" 
+                                   value="@(selected?.TenKetQua ?? "")"
+                                   placeholder="Nhập tên kết quả" required />
+                        </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold">Định giá (ID3.3)</label>
-                                    <input type="number" class="form-control" placeholder="0" />
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold">Ngày cập nhật (ID3.6)</label>
-                                    <input type="date" class="form-control" />
-                                </div>
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Phân loại (ID3.2)</label>
+                            <select name="PhanLoai" class="form-select">
+                                <option value="">-- Chọn phân loại --</option>
+                                <option value="Loại A" selected="@(selected?.PhanLoai == "Loại A")">Loại A</option>
+                                <option value="Loại B" selected="@(selected?.PhanLoai == "Loại B")">Loại B</option>
+                                <option value="Loại C" selected="@(selected?.PhanLoai == "Loại C")">Loại C</option>
+                                <option value="Loại D" selected="@(selected?.PhanLoai == "Loại D")">Loại D</option>
+                            </select>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>Chọn phân loại kết quả (A, B, C, D)
+                            </small>
+                        </div>
 
-                            <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Định giá (ID3.3)</label>
+                                <input type="number" step="0.01" name="DinhGia" class="form-control" 
+                                       value="@(selected?.DinhGia ?? 0)"
+                                       placeholder="0" />
+                            </div>
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Giá trị còn lại (ID3.4)</label>
-                                <input type="number" class="form-control" placeholder="0" />
+                                <input type="number" step="0.01" name="GiaTriConLai" class="form-control" 
+                                       value="@(selected?.GiaTriConLai ?? 0)"
+                                       placeholder="0" />
                             </div>
+                        </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Các hợp đồng sử dụng kết quả (ID3.5)</label>
-                                <textarea class="form-control" rows="2" placeholder="Nhập các hợp đồng sử dụng"></textarea>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Các hợp đồng sử dụng kết quả (ID3.5)</label>
+                            <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+                                @if (hopDongList.Any())
+                                {
+                                    @foreach (var hd in hopDongList)
+                                    {
+                                        var isChecked = selected?.HopDongIds != null && selected.HopDongIds.Contains(hd.Id);
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                   name="HopDongIds" value="@hd.Id" 
+                                                   id="hd_@hd.Id" 
+                                                   checked="@isChecked" />
+                                            <label class="form-check-label" for="hd_@hd.Id">
+                                                <strong>@hd.TenDoiTac</strong> 
+                                                <small class="text-muted">(@(hd.MaHopDong ?? "N/A"))</small>
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <small class="text-muted">Chưa có hợp đồng nào</small>
+                                }
                             </div>
+                            <small class="text-muted d-block mt-1">
+                                <i class="bi bi-info-circle me-1"></i>Chọn các hợp đồng liên quan đến kết quả này
+                            </small>
+                            @if (selected?.HopDongIds != null && selected.HopDongIds.Any())
+                            {
+                                <div class="mt-2 p-2 bg-light rounded">
+                                    <small class="text-success">
+                                        <i class="bi bi-check-circle me-1"></i><strong>Đã chọn @selected.HopDongIds.Count hợp đồng</strong>
+                                    </small>
+                                    <ul class="mb-0 mt-1 ps-3">
+                                        @foreach (var hdId in selected.HopDongIds)
+                                        {
+                                            var hd = hopDongList.FirstOrDefault(x => x.Id == hdId);
+                                            if (hd != null)
+                                            {
+                                                <li><small>@hd.TenDoiTac (@hd.MaHopDong)</small></li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Ngày cập nhật tài sản (ID3.6)</label>
+                            <input type="date" name="NgayCapNhatTaiSan" class="form-control"
+                                   value="@(selected?.NgayCapNhatTaiSan?.ToString("yyyy-MM-dd") ?? "")" />
+                        </div>
+
+                        @if (selected != null && selected.Id > 0)
+                        {
+                            <div class="alert alert-info">
+                                <small><strong>Đang chỉnh sửa:</strong> Id = @selected.Id, Mã = @selected.MaKetQua</small>
+                            </div>
+                        }
 
                         <div class="mt-4 d-flex flex-wrap gap-2">
-                            <button type="button" class="btn btn-success">
+                            <button type="submit" formaction="/KetQua/Create" class="btn btn-success">
                                 <i class="bi bi-plus-circle me-1"></i>Thêm
                             </button>
-                            <button type="button" class="btn btn-warning text-white">
+                            <button type="submit" formaction="/KetQua/Update" class="btn btn-warning text-white">
                                 <i class="bi bi-pencil-square me-1"></i>Sửa
                             </button>
-                            <button type="button" class="btn btn-danger">
+                            <button type="submit" formaction="/KetQua/Delete" name="id" value="@(selected?.Id ?? 0)" 
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Bạn có chắc muốn xóa kết quả này?');">
                                 <i class="bi bi-trash me-1"></i>Xóa
                             </button>
                             <button type="button" class="btn btn-secondary">
                                 <i class="bi bi-printer me-1"></i>In
                             </button>
-                            <button type="reset" class="btn btn-outline-secondary">
+                            <a href="/KetQua/Index" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-clockwise me-1"></i>Làm mới
-                            </button>
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -85,10 +168,59 @@
                             <thead class="table-light sticky-top">
                                 <tr>
                                     <th class="fw-semibold text-center" style="width: 15%;">Mã</th>
-                                    <th class="fw-semibold" style="width: 50%;">Tên đề tài</th>
+                                    <th class="fw-semibold" style="width: 50%;">Tên kết quả</th>
                                     <th class="fw-semibold text-center" style="width: 35%;">Phân loại</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var kq in Model)
+                                    {
+                                        <tr class="@(selected?.Id == kq.Id ? "table-active" : "")">
+                                            <td class="text-center">
+                                                <a asp-controller="KetQua" asp-action="Index" asp-route-id="@kq.Id"
+                                                   class="text-primary fw-bold text-decoration-none">
+                                                    @(kq.MaKetQua ?? "N/A")
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a asp-controller="KetQua" asp-action="Index" asp-route-id="@kq.Id"
+                                                   class="text-dark text-decoration-none">
+                                                    @kq.TenKetQua
+                                                </a>
+                                            </td>
+                                            <td class="text-center">
+                                                <a asp-controller="KetQua" asp-action="Index" asp-route-id="@kq.Id"
+                                                   class="text-decoration-none">
+                                                    @{
+                                                        var badgeClass = kq.PhanLoai switch
+                                                        {
+                                                            "Loại A" => "bg-success",
+                                                            "Loại B" => "bg-info",
+                                                            "Loại C" => "bg-warning",
+                                                            "Loại D" => "bg-secondary",
+                                                            _ => "bg-light text-dark"
+                                                        };
+                                                    }
+                                                    <span class="badge @badgeClass">
+                                                        @(kq.PhanLoai ?? "N/A")
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-4">
+                                            <i class="bi bi-inbox fs-1"></i>
+                                            <p class="mb-0 mt-2">Chưa có dữ liệu kết quả đề tài</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
                         </table>
                     </div>
                     <div class="mt-2">

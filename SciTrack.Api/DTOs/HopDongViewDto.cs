@@ -6,8 +6,8 @@ namespace SciTrack.Api.DTOs
     {
         public int Id { get; set; }
         public string TenDoiTac { get; set; }
-        public DateTime? NgayHieuLuc { get; set; }
-        public DateTime? NgayNghiemThu { get; set; }
+        public DateOnly? NgayHieuLuc { get; set; }
+        public DateOnly? NgayNghiemThu { get; set; }
         public decimal? TongGiaTriHopDong { get; set; }
         public decimal? ChiPhiKetQuaDeTai { get; set; }
         public decimal? ChiPhiTrangThietBi { get; set; }

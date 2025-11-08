@@ -10,9 +10,9 @@ namespace SciTrack.Api.Controllers
     [ApiController]
     public class HopDongController : ControllerBase
     {
-        private readonly KHCN_DBContext _context;
+        private readonly KhcnDbNewContext _context;
 
-        public HopDongController(KHCN_DBContext context)
+        public HopDongController(KhcnDbNewContext context)
         {
             _context = context;
         }
@@ -21,7 +21,7 @@ namespace SciTrack.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HopDongViewDto>>> GetAll()
         {
-            var list = await _context.HopDongs
+            var list = await _context.Hdkhcns
                 .AsNoTracking()
                 .Select(h => new HopDongViewDto
                 {
@@ -45,7 +45,7 @@ namespace SciTrack.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<HopDongViewDto>> GetById(int id)
         {
-            var h = await _context.HopDongs.FindAsync(id);
+            var h = await _context.Hdkhcns.FindAsync(id);
             if (h == null) return NotFound();
 
             var dto = new HopDongViewDto
@@ -71,7 +71,7 @@ namespace SciTrack.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var entity = new HopDong
+            var entity = new Hdkhcn
             {
                 TenDoiTac = dto.TenDoiTac,
                 NgayHieuLuc = dto.NgayHieuLuc,
@@ -84,7 +84,7 @@ namespace SciTrack.Api.Controllers
                 MaHopDong = dto.MaHopDong
             };
 
-            _context.HopDongs.Add(entity);
+            _context.Hdkhcns.Add(entity);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new { id = entity.Id }, entity);
@@ -94,7 +94,7 @@ namespace SciTrack.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, HopDongCreateDto dto)
         {
-            var entity = await _context.HopDongs.FindAsync(id);
+            var entity = await _context.Hdkhcns.FindAsync(id);
             if (entity == null) return NotFound();
 
             entity.TenDoiTac = dto.TenDoiTac;
@@ -115,10 +115,10 @@ namespace SciTrack.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var entity = await _context.HopDongs.FindAsync(id);
+            var entity = await _context.Hdkhcns.FindAsync(id);
             if (entity == null) return NotFound();
 
-            _context.HopDongs.Remove(entity);
+            _context.Hdkhcns.Remove(entity);
             await _context.SaveChangesAsync();
             return NoContent();
         }

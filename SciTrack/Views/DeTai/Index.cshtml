@@ -3,6 +3,7 @@
     ViewData["Title"] = "Đề tài KHCN";
     ViewData["Active"] = "DeTai";
     var selected = ViewBag.Selected as SciTrack.web.Models.DeTai;
+    var ketQuaList = ViewBag.KetQuaList as List<SciTrack.web.Models.KetQua> ?? new List<SciTrack.web.Models.KetQua>();
 }
 
 <div class="flex-fill p-4">
@@ -28,15 +29,21 @@
                         <i class="bi bi-pencil-square me-2"></i>Thông tin đề tài
                     </h6>
                     <form method="post">
+                        <!-- Hidden field chứa Id để Update/Delete -->
+                        <input type="hidden" name="Id" value="@(selected?.Id ?? 0)" />
+                        
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Mã số đề tài (ID2.1)</label>
                             <input type="text" name="MaDeTai" class="form-control" 
                                    value="@(selected?.MaDeTai ?? "")" 
-                                   placeholder="Nhập mã đề tài" required />
+                                   placeholder="Nhập mã đề tài (VD: DT001)" required />
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>Mã đề tài do bạn tự đặt (khác với Id tự động)
+                            </small>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Tên đề tài (ID2.2)</label>
+                            <label class="form-label fw-semibold">Tên đề tài (ID2.2) <span class="text-danger">*</span></label>
                             <input type="text" name="Ten" class="form-control" 
                                    value="@(selected?.Ten ?? "")" 
                                    placeholder="Nhập tên đề tài" required />
@@ -88,10 +95,27 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Kết quả đề tài (ID2.10)</label>
-                            <input type="text" name="KetQuaDeTai" class="form-control" 
-                                   value="@(selected?.KetQuaDeTai ?? "")" 
-                                   placeholder="Nhập kết quả đề tài" />
+                            <select name="KetQuaDeTaiId" class="form-select">
+                                <option value="">-- Chọn kết quả đề tài --</option>
+                                @foreach (var kq in ketQuaList)
+                                {
+                                    var isSelected = selected?.KetQuaDeTaiId.HasValue == true && selected.KetQuaDeTaiId.Value == kq.Id;
+                                    <option value="@kq.Id" selected="@isSelected">
+                                        @kq.TenKetQua
+                                    </option>
+                                }
+                            </select>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>Chọn kết quả nghiên cứu của đề tài này
+                            </small>
                         </div>
+
+                        @if (selected != null && selected.Id > 0)
+                        {
+                            <div class="alert alert-info">
+                                <small><strong>Đang chỉnh sửa:</strong> Id = @selected.Id, Mã = @selected.MaDeTai</small>
+                            </div>
+                        }
 
                         <!-- 🟣 CÁC NÚT THAO TÁC -->
                         <div class="mt-4 d-flex flex-wrap gap-2">
@@ -103,7 +127,10 @@
                                 <i class="bi bi-pencil-square me-1"></i>Sửa
                             </button>
 
-                            <button type="submit" formaction="/DeTai/Delete" class="btn btn-danger">
+                            <button type="submit" formaction="/DeTai/Delete" 
+                                    name="id" value="@(selected?.Id ?? 0)" 
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Bạn có chắc muốn xóa đề tài này?');">
                                 <i class="bi bi-trash me-1"></i>Xóa
                             </button>
 

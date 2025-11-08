@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace SciTrack.Api.DTOs
 {
@@ -22,7 +23,7 @@ namespace SciTrack.Api.DTOs
 
         public string? TrangThaiTaiSan { get; set; }
 
-        public DateTime? NgayCapNhat { get; set; }
+        public DateOnly? NgayCapNhat { get; set; }
 
         public int? MaDeTaiKHCN { get; set; }  // ID của đề tài
     }
