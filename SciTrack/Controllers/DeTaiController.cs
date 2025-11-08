@@ -10,11 +10,13 @@ namespace SciTrack.web.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<DeTaiController> _logger;
 
-        public DeTaiController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public DeTaiController(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<DeTaiController> logger)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
+            _logger = logger;
         }
 
         // 🟦 Lấy danh sách đề tài + chi tiết nếu có id
@@ -35,6 +37,17 @@ namespace SciTrack.web.Controllers
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<DeTai>();
                 }
 
+                // 🟦 Lấy danh sách kết quả đề tài cho dropdown
+                var ketQuaResponse = await httpClient.GetAsync("/api/KetQuaDeTai");
+                var ketQuaList = new List<KetQua>();
+                
+                if (ketQuaResponse.IsSuccessStatusCode)
+                {
+                    var ketQuaJson = await ketQuaResponse.Content.ReadAsStringAsync();
+                    ketQuaList = JsonSerializer.Deserialize<List<KetQua>>(ketQuaJson,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<KetQua>();
+                }
+
                 // 🟨 Nếu có mã đề tài được chọn => gọi API chi tiết hoặc lấy từ list
                 DeTai? selected = null;
                 if (!string.IsNullOrEmpty(maDeTai))
@@ -43,11 +56,14 @@ namespace SciTrack.web.Controllers
                 }
 
                 ViewBag.Selected = selected;
+                ViewBag.KetQuaList = ketQuaList; // Danh sách kết quả cho dropdown
                 return View(list);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error loading DeTai index");
                 ViewBag.Error = $"Lỗi kết nối API: {ex.Message}";
+                ViewBag.KetQuaList = new List<KetQua>();
                 return View(new List<DeTai>());
             }
         }
@@ -58,18 +74,63 @@ namespace SciTrack.web.Controllers
         {
             try
             {
+                // Map từ Model sang DTO
+                var dto = new
+                {
+                    maSoDeTai = model.MaDeTai,
+                    ten = model.Ten,
+                    ngayCapNhatTaiSan = model.CapNhatTaiSanLanCuoi,
+                    cacQuyetDinhLienQuan = model.QuyetDinhThamChieu,
+                    kinhPhiThucHien = model.KinhPhiThucHien,
+                    kinhPhiGiaoKhoaChuyen = model.KinhPhiDaoTao,
+                    kinhPhiVatTuTieuHao = model.KinhPhiTieuHao,
+                    haoMonKhauHaoLienQuan = model.KhauHaoThietBi,
+                    quyetDinhXuLyTaiSan = model.QuyetDinhXuLyTaiSan,
+                    ketQuaDeTai = model.KetQuaDeTaiId
+                };
+
+                _logger.LogInformation("Creating DeTai with MaDeTai={MaDeTai}, Ten={Ten}, KetQuaDeTaiId={KetQuaDeTaiId}", 
+                    model.MaDeTai, model.Ten, model.KetQuaDeTaiId);
+
                 var client = _httpClientFactory.CreateClient("api");
-                var json = JsonSerializer.Serialize(model);
+                var json = JsonSerializer.Serialize(dto);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                _logger.LogInformation("Sending to API: {Json}", json);
 
                 var response = await client.PostAsync("/api/DeTais", content);
 
-                TempData["Message"] = response.IsSuccessStatusCode
-                    ? "✅ Thêm đề tài thành công!"
-                    : $"⚠️ Không thể thêm đề tài! ({response.StatusCode})";
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Message"] = "✅ Thêm đề tài thành công!";
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogWarning("Create DeTai failed: {StatusCode}, {Error}", response.StatusCode, errorContent);
+                    
+                    // Parse JSON để lấy message đẹp hơn
+                    try
+                    {
+                        var errorObj = JsonSerializer.Deserialize<JsonElement>(errorContent);
+                        if (errorObj.TryGetProperty("message", out var messageElement))
+                        {
+                            TempData["Message"] = $"⚠️ {messageElement.GetString()}";
+                        }
+                        else
+                        {
+                            TempData["Message"] = $"⚠️ Không thể thêm đề tài!";
+                        }
+                    }
+                    catch
+                    {
+                        TempData["Message"] = $"⚠️ Không thể thêm đề tài! ({response.StatusCode})";
+                    }
+                }
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error creating DeTai");
                 TempData["Message"] = $"❌ Lỗi thêm mới: {ex.Message}";
             }
 
@@ -82,39 +143,109 @@ namespace SciTrack.web.Controllers
         {
             try
             {
+                // Map từ Model sang DTO
+                var dto = new
+                {
+                    ten = model.Ten,
+                    ngayCapNhatTaiSan = model.CapNhatTaiSanLanCuoi,
+                    cacQuyetDinhLienQuan = model.QuyetDinhThamChieu,
+                    kinhPhiThucHien = model.KinhPhiThucHien,
+                    kinhPhiGiaoKhoaChuyen = model.KinhPhiDaoTao,
+                    kinhPhiVatTuTieuHao = model.KinhPhiTieuHao,
+                    haoMonKhauHaoLienQuan = model.KhauHaoThietBi,
+                    quyetDinhXuLyTaiSan = model.QuyetDinhXuLyTaiSan,
+                    ketQuaDeTai = model.KetQuaDeTaiId
+                };
+
+                _logger.LogInformation("Updating DeTai ID {Id}: KetQuaDeTaiId={KetQuaDeTaiId}", 
+                    model.Id, model.KetQuaDeTaiId);
+
                 var client = _httpClientFactory.CreateClient("api");
-                var json = JsonSerializer.Serialize(model);
+                var json = JsonSerializer.Serialize(dto);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await client.PutAsync($"/api/DeTais/{model.MaDeTai}", content);
+                // Sử dụng Id thay vì MaDeTai
+                var response = await client.PutAsync($"/api/DeTais/{model.Id}", content);
 
-                TempData["Message"] = response.IsSuccessStatusCode
-                    ? "✏️ Cập nhật đề tài thành công!"
-                    : $"⚠️ Không thể cập nhật đề tài! ({response.StatusCode})";
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Message"] = "✏️ Cập nhật đề tài thành công!";
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogWarning("Update DeTai failed: {StatusCode}, {Error}", response.StatusCode, errorContent);
+                    
+                    // Parse JSON để lấy message đẹp hơn
+                    try
+                    {
+                        var errorObj = JsonSerializer.Deserialize<JsonElement>(errorContent);
+                        if (errorObj.TryGetProperty("message", out var messageElement))
+                        {
+                            TempData["Message"] = $"⚠️ {messageElement.GetString()}";
+                        }
+                        else
+                        {
+                            TempData["Message"] = $"⚠️ Không thể cập nhật đề tài!";
+                        }
+                    }
+                    catch
+                    {
+                        TempData["Message"] = $"⚠️ Không thể cập nhật đề tài! ({response.StatusCode})";
+                    }
+                }
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error updating DeTai");
                 TempData["Message"] = $"❌ Lỗi cập nhật: {ex.Message}";
             }
 
-            return RedirectToAction("Index", new { id = model.MaDeTai });
+            return RedirectToAction("Index", new { maDeTai = model.MaDeTai });
         }
 
         // 🟥 Xóa
         [HttpPost]
-        public async Task<IActionResult> Delete(string maDeTai)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var client = _httpClientFactory.CreateClient("api");
-                var response = await client.DeleteAsync($"/api/DeTais/{maDeTai}");
+                _logger.LogInformation("Deleting DeTai ID: {Id}", id);
 
-                TempData["Message"] = response.IsSuccessStatusCode
-                    ? $"🗑️ Đã xóa đề tài có mã {maDeTai} thành công!"
-                    : $"⚠️ Không thể xóa đề tài! ({response.StatusCode})";
+                var client = _httpClientFactory.CreateClient("api");
+                var response = await client.DeleteAsync($"/api/DeTais/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Message"] = $"🗑️ Đã xóa đề tài thành công!";
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogWarning("Delete DeTai failed: {StatusCode}, {Error}", response.StatusCode, errorContent);
+                    
+                    // Parse JSON để lấy message đẹp hơn
+                    try
+                    {
+                        var errorObj = JsonSerializer.Deserialize<JsonElement>(errorContent);
+                        if (errorObj.TryGetProperty("message", out var messageElement))
+                        {
+                            TempData["Message"] = $"⚠️ {messageElement.GetString()}";
+                        }
+                        else
+                        {
+                            TempData["Message"] = $"⚠️ Không thể xóa đề tài!";
+                        }
+                    }
+                    catch
+                    {
+                        TempData["Message"] = $"⚠️ Không thể xóa đề tài: {errorContent}";
+                    }
+                }
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error deleting DeTai");
                 TempData["Message"] = $"❌ Lỗi khi xóa: {ex.Message}";
             }
 

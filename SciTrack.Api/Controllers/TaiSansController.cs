@@ -37,7 +37,7 @@ namespace SciTrack.Api.Controllers
                     GiaTriConLai = ts.GiaTriConLai,
                     TrangThaiTaiSan = ts.TrangThaiTaiSan,
                     NgayCapNhat = ts.NgayCapNhat,
-                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn.HasValue ? ts.MaSoDeTaiKhcn.Value.ToString() : null,
+                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn  // Trả về ID trực tiếp
                 })
                 .ToListAsync();
 
@@ -65,7 +65,7 @@ namespace SciTrack.Api.Controllers
                     GiaTriConLai = ts.GiaTriConLai,
                     TrangThaiTaiSan = ts.TrangThaiTaiSan,
                     NgayCapNhat = ts.NgayCapNhat,
-                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn.HasValue ? ts.MaSoDeTaiKhcn.Value.ToString() : null,
+                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn  // Trả về ID trực tiếp
                 })
                 .FirstOrDefaultAsync();
 

@@ -133,6 +133,19 @@ namespace SciTrack.Api.Controllers
             if (ketQua == null)
                 return NotFound(new { message = $"Không tìm thấy kết quả với ID = {id}" });
 
+            // Kiểm tra xem có đề tài nào đang tham chiếu đến kết quả này không
+            var hasRelatedDeTai = await _context.Dtkhcns.AnyAsync(dt => dt.KetQuaDeTai == id);
+            if (hasRelatedDeTai)
+            {
+                var count = await _context.Dtkhcns.CountAsync(dt => dt.KetQuaDeTai == id);
+                return BadRequest(new 
+                { 
+                    message = $"Không thể xóa kết quả đề tài '{ketQua.TenKetQua}' vì đang có {count} đề tài liên quan. Vui lòng cập nhật các đề tài trước.",
+                    relatedCount = count,
+                    ketQuaTen = ketQua.TenKetQua
+                });
+            }
+
             try
             {
                 _context.Kqdts.Remove(ketQua);
@@ -141,18 +154,10 @@ namespace SciTrack.Api.Controllers
             }
             catch (DbUpdateException ex)
             {
-                if (ex.InnerException != null && ex.InnerException.Message.Contains("REFERENCE"))
+                return BadRequest(new
                 {
-                    return BadRequest(new
-                    {
-                        message = "Không thể xóa vì kết quả đề tài này đang được tham chiếu ở bảng Đề Tài."
-                    });
-                }
-
-                return StatusCode(500, new
-                {
-                    message = "Đã xảy ra lỗi trong quá trình xóa kết quả đề tài.",
-                    detail = ex.Message
+                    message = "Không thể xóa kết quả đề tài vì có ràng buộc dữ liệu từ các bảng khác.",
+                    error = ex.InnerException?.Message ?? ex.Message
                 });
             }
         }

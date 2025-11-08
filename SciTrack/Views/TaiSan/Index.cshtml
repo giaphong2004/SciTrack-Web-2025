@@ -3,6 +3,7 @@
     ViewData["Title"] = "Tài sản KH&CN";
     ViewData["Active"] = "TaiSan";
     var selected = ViewBag.Selected as SciTrack.web.Models.TaiSan;
+    var deTaiList = ViewBag.DeTaiList as List<SciTrack.web.Models.DeTai> ?? new List<SciTrack.web.Models.DeTai>();
 }
 
 <div class="flex-fill p-4">
@@ -91,10 +92,26 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Mã đề tài KH&CN (ID1.9)</label>
-                            <input type="text" name="MaDeTaiKHCN" class="form-control" 
-                                   value="@(selected?.MaDeTaiKHCN ?? "")" 
-                                   placeholder="Nhập mã đề tài" />
+                            <label class="form-label fw-semibold">Đề tài KH&CN (ID1.9)</label>
+                            <select name="MaDeTaiKHCN" class="form-select" id="deTaiDropdown">
+                                <option value="">-- Chọn đề tài --</option>
+                                @foreach (var dt in deTaiList)
+                                {
+                                    var isSelected = selected?.MaDeTaiKHCN.HasValue == true && selected.MaDeTaiKHCN.Value == dt.Id;
+                                    <option value="@dt.Id" selected="@isSelected">
+                                        @dt.Ten
+                                    </option>
+                                }
+                            </select>
+                            <small class="text-muted d-block mt-1">
+                                <i class="bi bi-info-circle me-1"></i>Chọn đề tài mà tài sản này thuộc về
+                            </small>
+                            @if (selected?.MaDeTaiKHCN.HasValue == true)
+                            {
+                                <small class="text-success d-block">
+                                    <i class="bi bi-check-circle me-1"></i>Đang chọn: ID = @selected.MaDeTaiKHCN
+                                </small>
+                            }
                         </div>
 
                         <!-- 🟣 CÁC NÚT THAO TÁC -->

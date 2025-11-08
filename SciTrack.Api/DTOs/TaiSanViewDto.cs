@@ -14,6 +14,6 @@
         public decimal? GiaTriConLai { get; set; }
         public string? TrangThaiTaiSan { get; set; }
         public DateOnly? NgayCapNhat { get; set; }
-        public string? MaDeTaiKHCN { get; set; }  // Mã đề tài (ID)
+        public int? MaDeTaiKHCN { get; set; }  // Đổi thành int? để nhất quán
     }
 }
