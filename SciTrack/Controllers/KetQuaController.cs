@@ -22,7 +22,7 @@ namespace SciTrack.web.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient("api");
 
-                // Lấy danh sách kết quả đề tài
+              
                 var response = await httpClient.GetAsync("/api/KetQuaDeTai");
                 var list = new List<KetQua>();
 
@@ -33,7 +33,7 @@ namespace SciTrack.web.Controllers
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<KetQua>();
                 }
 
-                // Lấy danh sách hợp đồng cho dropdown
+                
                 var hopDongResponse = await httpClient.GetAsync("/api/HopDong");
                 var hopDongList = new List<HopDong>();
 
@@ -44,7 +44,7 @@ namespace SciTrack.web.Controllers
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<HopDong>();
                 }
 
-                // Lấy chi tiết nếu có id
+                
                 KetQua? selected = null;
                 if (id.HasValue)
                 {
@@ -69,7 +69,7 @@ namespace SciTrack.web.Controllers
         {
             try
             {
-                // Gán danh sách ID hợp đồng từ checkboxes
+              
                 model.HopDongIds = HopDongIds;
 
                 var client = _httpClientFactory.CreateClient("api");
@@ -122,7 +122,7 @@ namespace SciTrack.web.Controllers
         {
             try
             {
-                // Gán danh sách ID hợp đồng từ checkboxes
+              
                 model.HopDongIds = HopDongIds;
 
                 var client = _httpClientFactory.CreateClient("api");

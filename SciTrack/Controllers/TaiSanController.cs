@@ -24,7 +24,7 @@ namespace SciTrack.web.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient("api");
 
-                // 🟦 Lấy toàn bộ danh sách tài sản
+            
                 var response = await httpClient.GetAsync("/api/TaiSans");
                 var list = new List<TaiSan>();
 
@@ -43,7 +43,7 @@ namespace SciTrack.web.Controllers
                     _logger.LogWarning("API TaiSans returned status: {StatusCode}", response.StatusCode);
                 }
 
-                // 🟩 Lấy danh sách đề tài cho dropdown
+            
                 var deTaiResponse = await httpClient.GetAsync("/api/DeTais");
                 var deTaiList = new List<DeTai>();
                 
@@ -62,7 +62,7 @@ namespace SciTrack.web.Controllers
                     _logger.LogWarning("API DeTais returned status: {StatusCode}", deTaiResponse.StatusCode);
                 }
 
-                // 🟨 Nếu có id => Gọi API /api/TaiSans/{id} để lấy chi tiết
+               
                 TaiSan? selected = null;
                 if (id.HasValue)
                 {
@@ -75,9 +75,9 @@ namespace SciTrack.web.Controllers
                     }
                 }
 
-                // 🟩 Truyền vào ViewBag để form bên trái hiển thị
+             
                 ViewBag.Selected = selected;
-                ViewBag.DeTaiList = deTaiList; // Danh sách đề tài cho dropdown
+                ViewBag.DeTaiList = deTaiList;
                 return View(list);
             }
             catch (Exception ex)
@@ -94,7 +94,7 @@ namespace SciTrack.web.Controllers
         {
             try
             {
-                // Fix: Nếu MaDeTaiKHCN là 0 thì set thành null
+             
                 if (model.MaDeTaiKHCN == 0)
                 {
                     model.MaDeTaiKHCN = null;
@@ -125,7 +125,7 @@ namespace SciTrack.web.Controllers
                     var errorContent = await response.Content.ReadAsStringAsync();
                     _logger.LogWarning("Create TaiSan failed: {StatusCode}, {Error}", response.StatusCode, errorContent);
                     
-                    // Parse JSON để lấy message đẹp hơn
+                   
                     try
                     {
                         var errorObj = JsonSerializer.Deserialize<JsonElement>(errorContent);
@@ -171,7 +171,7 @@ namespace SciTrack.web.Controllers
                     var errorContent = await response.Content.ReadAsStringAsync();
                     _logger.LogWarning("Delete TaiSan failed: {StatusCode}, {Error}", response.StatusCode, errorContent);
                     
-                    // Parse JSON để lấy message đẹp hơn
+                  
                     try
                     {
                         var errorObj = JsonSerializer.Deserialize<JsonElement>(errorContent);
@@ -205,7 +205,7 @@ namespace SciTrack.web.Controllers
         {
             try
             {
-                // Fix: Nếu MaDeTaiKHCN là 0 thì set thành null
+              
                 if (model.MaDeTaiKHCN == 0)
                 {
                     model.MaDeTaiKHCN = null;
@@ -235,7 +235,7 @@ namespace SciTrack.web.Controllers
                     var errorContent = await response.Content.ReadAsStringAsync();
                     _logger.LogWarning("Update TaiSan failed: {StatusCode}, {Error}", response.StatusCode, errorContent);
                     
-                    // Parse JSON để lấy message đẹp hơn
+                  
                     try
                     {
                         var errorObj = JsonSerializer.Deserialize<JsonElement>(errorContent);

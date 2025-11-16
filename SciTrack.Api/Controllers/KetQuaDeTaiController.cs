@@ -109,8 +109,6 @@ namespace SciTrack.Api.Controllers
 
             _context.Kqdts.Add(newKetQua);
             await _context.SaveChangesAsync();
-
-            // Thêm liên kết với hợp đồng (nếu có)
             if (dto.HopDongIds != null && dto.HopDongIds.Any())
             {
                 foreach (var hopDongId in dto.HopDongIds)
@@ -191,8 +189,6 @@ namespace SciTrack.Api.Controllers
                 
             if (ketQua == null)
                 return NotFound(new { message = $"Không tìm thấy kết quả với ID = {id}" });
-
-            // Kiểm tra xem có đề tài nào đang tham chiếu đến kết quả này không
             var hasRelatedDeTai = await _context.Dtkhcns.AnyAsync(dt => dt.KetQuaDeTai == id);
             if (hasRelatedDeTai)
             {
@@ -207,10 +203,8 @@ namespace SciTrack.Api.Controllers
 
             try
             {
-                // Xóa tất cả liên kết với hợp đồng trước
                 _context.LienKetKqdtHds.RemoveRange(ketQua.LienKetKqdtHds);
-                
-                // Xóa kết quả đề tài
+
                 _context.Kqdts.Remove(ketQua);
                 await _context.SaveChangesAsync();
                 

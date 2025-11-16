@@ -1,8 +1,5 @@
 ﻿namespace SciTrack.Api.DTOs
 {
-    /// <summary>
-    /// DTO dùng để trả về thông tin tài sản (OUTPUT)
-    /// </summary>
     public class TaiSanViewDto
     {
         public int Id { get; set; }
@@ -14,6 +11,6 @@
         public decimal? GiaTriConLai { get; set; }
         public string? TrangThaiTaiSan { get; set; }
         public DateOnly? NgayCapNhat { get; set; }
-        public int? MaDeTaiKHCN { get; set; }  // Đổi thành int? để nhất quán
+        public int? MaDeTaiKHCN { get; set; }  
     }
 }

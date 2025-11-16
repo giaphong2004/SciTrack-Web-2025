@@ -13,6 +13,6 @@ namespace SciTrack.Api.DTOs
         public string? DT_HD_KHCN_LienQuan { get; set; }
         public string? NhatKySuDung { get; set; }
         public string? TinhTrangThietBi { get; set; }
-        public string? MaThietBi { get; set; }  // MỚI
+        public string? MaThietBi { get; set; }  
     }
 }

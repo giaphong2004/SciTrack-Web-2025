@@ -37,7 +37,7 @@ namespace SciTrack.Api.Controllers
                     GiaTriConLai = ts.GiaTriConLai,
                     TrangThaiTaiSan = ts.TrangThaiTaiSan,
                     NgayCapNhat = ts.NgayCapNhat,
-                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn  // Trả về ID trực tiếp
+                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn  
                 })
                 .ToListAsync();
 
@@ -65,7 +65,7 @@ namespace SciTrack.Api.Controllers
                     GiaTriConLai = ts.GiaTriConLai,
                     TrangThaiTaiSan = ts.TrangThaiTaiSan,
                     NgayCapNhat = ts.NgayCapNhat,
-                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn  // Trả về ID trực tiếp
+                    MaDeTaiKHCN = ts.MaSoDeTaiKhcn  
                 })
                 .FirstOrDefaultAsync();
 
@@ -98,8 +98,6 @@ namespace SciTrack.Api.Controllers
 
             _context.Tskhcns.Add(newTaiSan);
             await _context.SaveChangesAsync();
-
-            // Lấy thông tin đề tài nếu có
             string? tenDeTai = null;
             if (newTaiSan.MaSoDeTaiKhcn.HasValue)
             {
@@ -135,7 +133,6 @@ namespace SciTrack.Api.Controllers
                 return NotFound(new { message = $"Không tìm thấy tài sản với ID = {id}" });
             }
 
-            // Cập nhật thông tin
             taiSan.SoDanhMuc = taiSanDto.SoDanhMuc;
             taiSan.Ten = taiSanDto.Ten;
             taiSan.NguyenGia = taiSanDto.NguyenGia;

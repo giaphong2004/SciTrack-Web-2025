@@ -39,7 +39,7 @@ namespace SciTrack.Api.Controllers
                     KhauHaoThietBi = dt.HaoMonLienQuan,
                     QuyetDinhXuLyTaiSan = dt.QuyetDinhXuLy,
                     KetQuaDeTai = dt.KetQuaDeTaiNavigation != null ? dt.KetQuaDeTaiNavigation.TenKetQua : null,
-                    KetQuaDeTaiId = dt.KetQuaDeTai  // Thêm ID
+                    KetQuaDeTaiId = dt.KetQuaDeTai  
                 })
                 .ToListAsync();
 
@@ -69,7 +69,7 @@ namespace SciTrack.Api.Controllers
                     KhauHaoThietBi = dt.HaoMonLienQuan,
                     QuyetDinhXuLyTaiSan = dt.QuyetDinhXuLy,
                     KetQuaDeTai = dt.KetQuaDeTaiNavigation != null ? dt.KetQuaDeTaiNavigation.TenKetQua : null,
-                    KetQuaDeTaiId = dt.KetQuaDeTai  // Thêm ID
+                    KetQuaDeTaiId = dt.KetQuaDeTai  
                 })
                 .FirstOrDefaultAsync();
 
@@ -87,7 +87,6 @@ namespace SciTrack.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Dtkhcn>> PostDeTai(DeTaiCreateDto deTaiDto)
         {
-            // Bước 1: Kiểm tra mã đề tài đã tồn tại chưa
             if (!string.IsNullOrEmpty(deTaiDto.MaSoDeTai))
             {
                 var exists = await _context.Dtkhcns.AnyAsync(dt => dt.MaDeTai == deTaiDto.MaSoDeTai);
@@ -96,8 +95,6 @@ namespace SciTrack.Api.Controllers
                     return BadRequest(new { message = $"Mã đề tài '{deTaiDto.MaSoDeTai}' đã tồn tại!" });
                 }
             }
-
-            // Bước 2: Kiểm tra KetQuaDeTai (ID) có tồn tại không (nếu được chọn)
             if (deTaiDto.KetQuaDeTai.HasValue)
             {
                 var ketQuaExists = await _context.Kqdts.AnyAsync(kq => kq.Id == deTaiDto.KetQuaDeTai.Value);
@@ -106,13 +103,9 @@ namespace SciTrack.Api.Controllers
                     return BadRequest(new { message = $"Kết quả đề tài với ID = {deTaiDto.KetQuaDeTai} không tồn tại!" });
                 }
             }
-
-            // Bước 3: Sử dụng mã đề tài từ người dùng hoặc tự tạo
             var maDeTai = !string.IsNullOrEmpty(deTaiDto.MaSoDeTai) 
                 ? deTaiDto.MaSoDeTai 
                 : $"DT{DateTime.Now:yyyyMMddHHmmss}";
-
-            // Bước 4: Tạo đề tài mới
             var newDeTai = new Dtkhcn
             {
                 MaDeTai = maDeTai,
@@ -124,13 +117,11 @@ namespace SciTrack.Api.Controllers
                 KinhPhiVatTuTieuHao = deTaiDto.KinhPhiVatTuTieuHao,
                 HaoMonLienQuan = deTaiDto.HaoMonKhauHaoLienQuan,
                 QuyetDinhXuLy = deTaiDto.QuyetDinhXuLyTaiSan,
-                KetQuaDeTai = deTaiDto.KetQuaDeTai  // Lưu ID của kết quả đề tài (có thể null)
+                KetQuaDeTai = deTaiDto.KetQuaDeTai  
             };
 
             _context.Dtkhcns.Add(newDeTai);
             await _context.SaveChangesAsync();
-
-            // Bước 5: Lấy tên kết quả đề tài để trả về (nếu có)
             string? tenKetQua = null;
             if (newDeTai.KetQuaDeTai.HasValue)
             {
@@ -140,7 +131,6 @@ namespace SciTrack.Api.Controllers
                 tenKetQua = ketQua?.TenKetQua;
             }
 
-            // Bước 6: Trả về response với thông tin đề tài vừa tạo
             return CreatedAtAction(
                 nameof(GetDeTai), 
                 new { id = newDeTai.Id }, 
@@ -164,7 +154,6 @@ namespace SciTrack.Api.Controllers
                 return NotFound(new { message = $"Không tìm thấy đề tài với ID = {id}" });
             }
 
-            // Kiểm tra KetQuaDeTai (ID) có tồn tại không (nếu được chọn)
             if (deTaiDto.KetQuaDeTai.HasValue)
             {
                 var ketQuaExists = await _context.Kqdts.AnyAsync(kq => kq.Id == deTaiDto.KetQuaDeTai.Value);
@@ -174,7 +163,6 @@ namespace SciTrack.Api.Controllers
                 }
             }
 
-            // Cập nhật thông tin đề tài
             deTai.TenDtkhcn = deTaiDto.Ten;
             deTai.NgayCapNhatTaiSan = deTaiDto.NgayCapNhatTaiSan;
             deTai.CacQuyetDinh = deTaiDto.CacQuyetDinhLienQuan;
@@ -183,7 +171,7 @@ namespace SciTrack.Api.Controllers
             deTai.KinhPhiVatTuTieuHao = deTaiDto.KinhPhiVatTuTieuHao;
             deTai.HaoMonLienQuan = deTaiDto.HaoMonKhauHaoLienQuan;
             deTai.QuyetDinhXuLy = deTaiDto.QuyetDinhXuLyTaiSan;
-            deTai.KetQuaDeTai = deTaiDto.KetQuaDeTai;  // Lưu ID của kết quả đề tài (có thể null)
+            deTai.KetQuaDeTai = deTaiDto.KetQuaDeTai; 
 
             try
             {
@@ -212,8 +200,6 @@ namespace SciTrack.Api.Controllers
             { 
                 return NotFound(new { message = $"Không tìm thấy đề tài với ID = {id}" });
             }
-
-            // Kiểm tra xem có tài sản nào đang tham chiếu đến đề tài này không
             var hasRelatedTaiSan = await _context.Tskhcns.AnyAsync(ts => ts.MaSoDeTaiKhcn == id);
             if (hasRelatedTaiSan)
             {
@@ -235,7 +221,6 @@ namespace SciTrack.Api.Controllers
             }
             catch (DbUpdateException ex)
             {
-                // Bắt lỗi nếu có constraint từ database
                 return BadRequest(new 
                 { 
                     message = "Không thể xóa đề tài vì có ràng buộc dữ liệu từ các bảng khác.",

@@ -22,7 +22,7 @@ namespace SciTrack.web.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient("api");
 
-                // Lấy danh sách thiết bị
+         
                 var response = await httpClient.GetAsync("/api/TBKHCN");
                 var list = new List<ThietBi>();
 
@@ -33,7 +33,7 @@ namespace SciTrack.web.Controllers
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<ThietBi>();
                 }
 
-                // Lấy chi tiết nếu có id
+             
                 ThietBi? selected = null;
                 if (id.HasValue)
                 {

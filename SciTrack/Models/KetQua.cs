@@ -8,8 +8,8 @@
         public string? PhanLoai { get; set; }
         public decimal? DinhGia { get; set; }
         public decimal? GiaTriConLai { get; set; }
-        public string? CacHopDong { get; set; }  // Text (backward compatible)
-        public List<int>? HopDongIds { get; set; }  // Danh sách ID hợp đồng
-        public DateOnly? NgayCapNhatTaiSan { get; set; }  // Đổi thành DateOnly? để khớp với API
+        public string? CacHopDong { get; set; }  
+        public List<int>? HopDongIds { get; set; } 
+        public DateOnly? NgayCapNhatTaiSan { get; set; }  
     }
 }
