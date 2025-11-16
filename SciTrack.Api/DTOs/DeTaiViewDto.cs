@@ -1,9 +1,9 @@
 ﻿namespace SciTrack.Api.DTOs
 {
-    // DTO này dùng để "trưng bày" các trường
+
     public class DeTaiViewDto
     {
-        public int Id { get; set; }  // Thêm Id để frontend có thể sử dụng
+        public int Id { get; set; }  
         public string MaDeTai { get; set; } = string.Empty;
         public string Ten { get; set; } = string.Empty;
         public DateOnly? CapNhatTaiSanLanCuoi { get; set; }

@@ -2,10 +2,10 @@
 {
     public class DeTai
     {
-        public int Id { get; set; }  // Thêm Id để map với backend
+        public int Id { get; set; } 
         public string MaDeTai { get; set; } = string.Empty;
         public string Ten { get; set; } = string.Empty;
-        public DateOnly? CapNhatTaiSanLanCuoi { get; set; }  // Đổi thành DateOnly? để khớp với API
+        public DateOnly? CapNhatTaiSanLanCuoi { get; set; }  
         public string? QuyetDinhThamChieu { get; set; }
         public decimal? KinhPhiThucHien { get; set; }
         public decimal? KinhPhiDaoTao { get; set; }
@@ -13,10 +13,10 @@
         public decimal? KhauHaoThietBi { get; set; }
         public string? QuyetDinhXuLyTaiSan { get; set; }
         
-        // Tên kết quả đề tài (để hiển thị)
+
         public string? KetQuaDeTai { get; set; }
         
-        // ID kết quả đề tài (để submit)
+       
         public int? KetQuaDeTaiId { get; set; }
     }
 }

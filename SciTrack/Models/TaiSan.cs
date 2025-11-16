@@ -10,7 +10,7 @@
         public decimal? HaoMon { get; set; }
         public decimal? GiaTriConLai { get; set; }
         public string? TrangThaiTaiSan { get; set; }
-        public DateOnly? NgayCapNhat { get; set; }  // Đổi thành DateOnly?
-        public int? MaDeTaiKHCN { get; set; }  // Đổi thành int? để khớp với API
+        public DateOnly? NgayCapNhat { get; set; } 
+        public int? MaDeTaiKHCN { get; set; }  
     }
 }

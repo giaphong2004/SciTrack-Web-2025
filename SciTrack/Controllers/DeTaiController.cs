@@ -19,14 +19,13 @@ namespace SciTrack.web.Controllers
             _logger = logger;
         }
 
-        // 🟦 Lấy danh sách đề tài + chi tiết nếu có id
         public async Task<IActionResult> Index(string? maDeTai)
         {
             try
             {
                 var httpClient = _httpClientFactory.CreateClient("api");
 
-                // 🟩 Lấy toàn bộ danh sách đề tài
+ 
                 var response = await httpClient.GetAsync("/api/DeTais");
                 var list = new List<DeTai>();
 
@@ -37,7 +36,7 @@ namespace SciTrack.web.Controllers
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<DeTai>();
                 }
 
-                // 🟦 Lấy danh sách kết quả đề tài cho dropdown
+              
                 var ketQuaResponse = await httpClient.GetAsync("/api/KetQuaDeTai");
                 var ketQuaList = new List<KetQua>();
                 
@@ -48,7 +47,6 @@ namespace SciTrack.web.Controllers
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<KetQua>();
                 }
 
-                // 🟨 Nếu có mã đề tài được chọn => gọi API chi tiết hoặc lấy từ list
                 DeTai? selected = null;
                 if (!string.IsNullOrEmpty(maDeTai))
                 {
@@ -56,7 +54,7 @@ namespace SciTrack.web.Controllers
                 }
 
                 ViewBag.Selected = selected;
-                ViewBag.KetQuaList = ketQuaList; // Danh sách kết quả cho dropdown
+                ViewBag.KetQuaList = ketQuaList; 
                 return View(list);
             }
             catch (Exception ex)
@@ -74,7 +72,7 @@ namespace SciTrack.web.Controllers
         {
             try
             {
-                // Map từ Model sang DTO
+               
                 var dto = new
                 {
                     maSoDeTai = model.MaDeTai,
@@ -109,7 +107,7 @@ namespace SciTrack.web.Controllers
                     var errorContent = await response.Content.ReadAsStringAsync();
                     _logger.LogWarning("Create DeTai failed: {StatusCode}, {Error}", response.StatusCode, errorContent);
                     
-                    // Parse JSON để lấy message đẹp hơn
+                 
                     try
                     {
                         var errorObj = JsonSerializer.Deserialize<JsonElement>(errorContent);
@@ -143,7 +141,7 @@ namespace SciTrack.web.Controllers
         {
             try
             {
-                // Map từ Model sang DTO
+              
                 var dto = new
                 {
                     ten = model.Ten,
@@ -164,7 +162,7 @@ namespace SciTrack.web.Controllers
                 var json = JsonSerializer.Serialize(dto);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                // Sử dụng Id thay vì MaDeTai
+              
                 var response = await client.PutAsync($"/api/DeTais/{model.Id}", content);
 
                 if (response.IsSuccessStatusCode)
@@ -176,7 +174,7 @@ namespace SciTrack.web.Controllers
                     var errorContent = await response.Content.ReadAsStringAsync();
                     _logger.LogWarning("Update DeTai failed: {StatusCode}, {Error}", response.StatusCode, errorContent);
                     
-                    // Parse JSON để lấy message đẹp hơn
+                  
                     try
                     {
                         var errorObj = JsonSerializer.Deserialize<JsonElement>(errorContent);
@@ -224,7 +222,7 @@ namespace SciTrack.web.Controllers
                     var errorContent = await response.Content.ReadAsStringAsync();
                     _logger.LogWarning("Delete DeTai failed: {StatusCode}, {Error}", response.StatusCode, errorContent);
                     
-                    // Parse JSON để lấy message đẹp hơn
+                  
                     try
                     {
                         var errorObj = JsonSerializer.Deserialize<JsonElement>(errorContent);

@@ -23,7 +23,6 @@ namespace SciTrack.Api.DTOs
 
         public string? QuyetDinhXuLyTaiSan { get; set; }
 
-        // ID của kết quả đề tài đã có sẵn (chọn từ dropdown)
         public int? KetQuaDeTai { get; set; }
     }
 }

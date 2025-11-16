@@ -3,9 +3,6 @@ using System;
 
 namespace SciTrack.Api.DTOs
 {
-    /// <summary>
-    /// DTO dùng để tạo/cập nhật tài sản (INPUT)
-    /// </summary>
     public class TaiSanCreateDto
     {
         [Required(ErrorMessage = "Tên tài sản là bắt buộc")]
@@ -25,6 +22,6 @@ namespace SciTrack.Api.DTOs
 
         public DateOnly? NgayCapNhat { get; set; }
 
-        public int? MaDeTaiKHCN { get; set; }  // ID của đề tài
+        public int? MaDeTaiKHCN { get; set; }  
     }
 }
