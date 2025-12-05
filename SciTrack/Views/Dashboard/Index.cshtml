@@ -1,0 +1,459 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["Active"] = "Dashboard";
+}
+
+<div class="flex-fill p-4">
+    <h5 class="fw-bold text-primary mb-1">
+        <i class="bi bi-speedometer2 me-2"></i>Phần mềm quản lý KH&CN — Tổng quan hệ thống
+    </h5>
+    <h6 class="fw-bold mb-3 text-muted">Dashboard - Thống kê và báo cáo</h6>
+
+    <!-- Loading indicator -->
+    <div id="loadingIndicator" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+        <p class="mt-2 text-muted">Đang tải dữ liệu từ hệ thống...</p>
+    </div>
+
+    <!-- Error message -->
+    <div id="errorMessage" class="alert alert-danger" style="display: none;">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span id="errorText"></span>
+        <button type="button" class="btn btn-sm btn-outline-danger ms-3" onclick="loadDashboardData()">
+            <i class="bi bi-arrow-clockwise me-1"></i>Thử lại
+        </button>
+    </div>
+
+    <!-- Dashboard content -->
+    <div id="dashboardContent" style="display: none;">
+        <!-- 🟢 THỐNG KÊ TỔNG QUAN -->
+        <div class="row g-3 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #0d6efd !important;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Tài sản KH&CN</h6>
+                                <h3 class="fw-bold text-primary mb-0" id="totalTaiSan">0</h3>
+                                <small class="text-success"><i class="bi bi-database"></i> Tổng số</small>
+                            </div>
+                            <div class=" bg-opacity-10 p-3 rounded-circle">
+                                <i class="bi bi-box-seam fs-3 text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #198754 !important;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Đề tài KH&CN</h6>
+                                <h3 class="fw-bold text-success mb-0" id="totalDeTai">0</h3>
+                                <small class="text-success"><i class="bi bi-database"></i> Tổng số</small>
+                            </div>
+                            <div class="bg-opacity-10 p-3 rounded-circle">
+                                <i class="fa-solid fa-flask fs-3 text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #ffc107 !important;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Kết quả đề tài</h6>
+                                <h3 class="fw-bold text-warning mb-0" id="totalKetQua">0</h3>
+                                <small class="text-success"><i class="bi bi-database"></i> Tổng số</small>
+                            </div>
+                            <div class=" bg-opacity-10 p-3 rounded-circle">
+                                <i class="bi bi-trophy fs-3 text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #dc3545 !important;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Hợp đồng KH&CN</h6>
+                                <h3 class="fw-bold text-danger mb-0" id="totalHopDong">0</h3>
+                                <small class="text-success"><i class="bi bi-database"></i> Tổng số</small>
+                            </div>
+                            <div class="bg-opacity-10 p-3 rounded-circle">
+                                <i class="bi bi-file-earmark-text fs-3 text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🟡 BIỂU ĐỒ HÀNG 1 -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-bar-chart-fill text-primary me-2"></i>Kinh phí thực hiện đề tài (VNĐ)
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="noDataKinhPhi" class="text-center text-muted py-4" style="display: none;">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mb-0 mt-2">Chưa có dữ liệu kinh phí</p>
+                        </div>
+                        <canvas id="chartKinhPhi" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-pie-chart-fill text-success me-2"></i>Phân loại kết quả đề tài
+                        </h6>
+                    </div>
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <div id="noDataPhanLoai" class="text-center text-muted py-4" style="display: none;">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mb-0 mt-2">Chưa có dữ liệu</p>
+                        </div>
+                        <canvas id="chartPhanLoai" height="280"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔵 BIỂU ĐỒ HÀNG 2 -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-graph-up text-danger me-2"></i>Giá trị hợp đồng theo đối tác
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="noDataHopDong" class="text-center text-muted py-4" style="display: none;">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mb-0 mt-2">Chưa có dữ liệu hợp đồng</p>
+                        </div>
+                        <canvas id="chartHopDong" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-wrench-adjustable-circle text-info me-2"></i>Tình trạng thiết bị KH&CN
+                        </h6>
+                    </div>
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <div id="noDataThietBi" class="text-center text-muted py-4" style="display: none;">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mb-0 mt-2">Chưa có dữ liệu thiết bị</p>
+                        </div>
+                        <canvas id="chartThietBi" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <script>
+        let chartKinhPhi, chartPhanLoai, chartHopDong, chartThietBi;
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+
+        function formatShortCurrency(value) {
+            if (value >= 1000000000) {
+                return (value / 1000000000).toFixed(1) + ' tỷ';
+            } else if (value >= 1000000) {
+                return (value / 1000000).toFixed(0) + ' tr';
+            }
+            return value.toLocaleString('vi-VN');
+        }
+
+        function initChartKinhPhi(data) {
+            const canvas = document.getElementById('chartKinhPhi');
+            const noData = document.getElementById('noDataKinhPhi');
+            
+            if (!data.labels || data.labels.length === 0) {
+                canvas.style.display = 'none';
+                noData.style.display = 'block';
+                return;
+            }
+            
+            canvas.style.display = 'block';
+            noData.style.display = 'none';
+            
+            const ctx = canvas.getContext('2d');
+            if (chartKinhPhi) chartKinhPhi.destroy();
+            
+            chartKinhPhi = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Kinh phí (VNĐ)',
+                        data: data.data,
+                        backgroundColor: [
+                            'rgba(13, 110, 253, 0.8)',
+                            'rgba(25, 135, 84, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(220, 53, 69, 0.8)',
+                            'rgba(13, 202, 240, 0.8)',
+                            'rgba(111, 66, 193, 0.8)',
+                            'rgba(253, 126, 20, 0.8)',
+                            'rgba(32, 201, 151, 0.8)',
+                            'rgba(214, 51, 132, 0.8)',
+                            'rgba(102, 16, 242, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return formatCurrency(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatShortCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initChartPhanLoai(data) {
+            const canvas = document.getElementById('chartPhanLoai');
+            const noData = document.getElementById('noDataPhanLoai');
+            
+            if (!data.labels || data.labels.length === 0) {
+                canvas.style.display = 'none';
+                noData.style.display = 'block';
+                return;
+            }
+            
+            canvas.style.display = 'block';
+            noData.style.display = 'none';
+            
+            const ctx = canvas.getContext('2d');
+            if (chartPhanLoai) chartPhanLoai.destroy();
+            
+            chartPhanLoai = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.data,
+                        backgroundColor: [
+                            'rgba(25, 135, 84, 0.9)',
+                            'rgba(13, 202, 240, 0.9)',
+                            'rgba(255, 193, 7, 0.9)',
+                            'rgba(108, 117, 125, 0.9)',
+                            'rgba(220, 53, 69, 0.9)'
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, usePointStyle: true }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initChartHopDong(data) {
+            const canvas = document.getElementById('chartHopDong');
+            const noData = document.getElementById('noDataHopDong');
+            
+            if (!data.labels || data.labels.length === 0) {
+                canvas.style.display = 'none';
+                noData.style.display = 'block';
+                return;
+            }
+            
+            canvas.style.display = 'block';
+            noData.style.display = 'none';
+            
+            const ctx = canvas.getContext('2d');
+            if (chartHopDong) chartHopDong.destroy();
+            
+            chartHopDong = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Giá trị hợp đồng',
+                        data: data.data,
+                        borderColor: 'rgb(220, 53, 69)',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgb(220, 53, 69)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return formatCurrency(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatShortCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initChartThietBi(data) {
+            const canvas = document.getElementById('chartThietBi');
+            const noData = document.getElementById('noDataThietBi');
+            
+            if (!data.labels || data.labels.length === 0) {
+                canvas.style.display = 'none';
+                noData.style.display = 'block';
+                return;
+            }
+            
+            canvas.style.display = 'block';
+            noData.style.display = 'none';
+            
+            const ctx = canvas.getContext('2d');
+            if (chartThietBi) chartThietBi.destroy();
+            
+            chartThietBi = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.data,
+                        backgroundColor: [
+                            'rgba(25, 135, 84, 0.9)',
+                            'rgba(255, 193, 7, 0.9)',
+                            'rgba(13, 202, 240, 0.9)',
+                            'rgba(220, 53, 69, 0.9)',
+                            'rgba(108, 117, 125, 0.9)'
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, usePointStyle: true }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadDashboardData() {
+            // Show loading, hide others
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            try {
+                const response = await fetch('/Dashboard/GetDashboardData');
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.message || 'Không thể tải dữ liệu');
+                }
+
+                // Cập nhật thống kê
+                document.getElementById('totalTaiSan').textContent = result.summary.totalTaiSan;
+                document.getElementById('totalDeTai').textContent = result.summary.totalDeTai;
+                document.getElementById('totalKetQua').textContent = result.summary.totalKetQua;
+                document.getElementById('totalHopDong').textContent = result.summary.totalHopDong;
+
+                // Khởi tạo biểu đồ
+                initChartKinhPhi(result.kinhPhiDeTai);
+                initChartPhanLoai(result.phanLoaiKetQua);
+                initChartHopDong(result.hopDongGiaTri);
+                initChartThietBi(result.tinhTrangThietBi);
+
+                // Hiển thị nội dung
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Dashboard error:', error);
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorText').textContent = error.message;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDashboardData);
+    </script>
+}

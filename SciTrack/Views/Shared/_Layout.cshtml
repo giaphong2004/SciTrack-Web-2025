@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -26,24 +26,28 @@
             <i class="bi bi-list me-2"></i> Quản lý KH&CN
         </h5>
 
-        <a asp-controller="TaiSan" asp-action="Index" class="@(ViewData["Active"] == "TaiSan" ? "active" : "")">
+        <a asp-controller="Dashboard" asp-action="Index" class="@(ViewData["Active"]?.ToString() == "Dashboard" ? "active" : "")">
+            <i class="bi bi-speedometer2 me-2"></i> <span>Tổng quan</span>
+        </a>
+
+        <a asp-controller="TaiSan" asp-action="Index" class="@(ViewData["Active"]?.ToString() == "TaiSan" ? "active" : "")">
             <i class="bi bi-box-seam me-2"></i> <span>Tài sản KH&CN</span>
         </a>
 
-        <a asp-controller="DeTai" asp-action="Index" class="@(ViewData["Active"] == "DeTai" ? "active" : "")">
+        <a asp-controller="DeTai" asp-action="Index" class="@(ViewData["Active"]?.ToString() == "DeTai" ? "active" : "")">
             
             <i class="fa-solid fa-flask me-2"></i> <span>Đề tài KH&CN</span>
         </a>
 
-        <a asp-controller="KetQua" asp-action="Index" class="@(ViewData["Active"] == "KetQua" ? "active" : "")">
+        <a asp-controller="KetQua" asp-action="Index" class="@(ViewData["Active"]?.ToString() == "KetQua" ? "active" : "")">
             <i class="bi bi-trophy me-2"></i> <span>Kết quả đề tài</span>
         </a>
 
-        <a asp-controller="ThietBi" asp-action="Index" class="@(ViewData["Active"] == "ThietBi" ? "active" : "")">
+        <a asp-controller="ThietBi" asp-action="Index" class="@(ViewData["Active"]?.ToString() == "ThietBi" ? "active" : "")">
             <i class="bi bi-wrench-adjustable-circle me-2"></i> <span>Tình trạng thiết bị</span>
         </a>
 
-        <a asp-controller="HopDong" asp-action="Index" class="@(ViewData["Active"] == "HopDong" ? "active" : "")">
+        <a asp-controller="HopDong" asp-action="Index" class="@(ViewData["Active"]?.ToString() == "HopDong" ? "active" : "")">
             <i class="bi bi-file-earmark-text me-2"></i> <span>Hợp đồng KH&CN</span>
         </a>
     </div>

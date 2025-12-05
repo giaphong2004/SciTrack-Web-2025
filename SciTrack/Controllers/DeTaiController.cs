@@ -141,9 +141,9 @@ namespace SciTrack.web.Controllers
         {
             try
             {
-              
                 var dto = new
                 {
+                    maSoDeTai = model.MaDeTai,  // ✅ Thêm maSoDeTai để cập nhật mã đề tài
                     ten = model.Ten,
                     ngayCapNhatTaiSan = model.CapNhatTaiSanLanCuoi,
                     cacQuyetDinhLienQuan = model.QuyetDinhThamChieu,
@@ -155,8 +155,8 @@ namespace SciTrack.web.Controllers
                     ketQuaDeTai = model.KetQuaDeTaiId
                 };
 
-                _logger.LogInformation("Updating DeTai ID {Id}: KetQuaDeTaiId={KetQuaDeTaiId}", 
-                    model.Id, model.KetQuaDeTaiId);
+                _logger.LogInformation("Updating DeTai ID {Id}: MaDeTai={MaDeTai}, KetQuaDeTaiId={KetQuaDeTaiId}", 
+                    model.Id, model.MaDeTai, model.KetQuaDeTaiId);
 
                 var client = _httpClientFactory.CreateClient("api");
                 var json = JsonSerializer.Serialize(dto);

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SciTrack.Api.Data;
 using SciTrack.Api.DTOs;
@@ -145,6 +145,9 @@ namespace SciTrack.Api.Controllers
             );
         }
 
+        /// <summary>
+        /// Cập nhật đề tài
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDeTai(int id, DeTaiCreateDto deTaiDto)
         {
@@ -162,7 +165,7 @@ namespace SciTrack.Api.Controllers
                     return BadRequest(new { message = $"Kết quả đề tài với ID = {deTaiDto.KetQuaDeTai} không tồn tại!" });
                 }
             }
-
+            deTai.MaDeTai = deTaiDto.MaSoDeTai ?? deTai.MaDeTai;
             deTai.TenDtkhcn = deTaiDto.Ten;
             deTai.NgayCapNhatTaiSan = deTaiDto.NgayCapNhatTaiSan;
             deTai.CacQuyetDinh = deTaiDto.CacQuyetDinhLienQuan;
