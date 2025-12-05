@@ -16,6 +16,7 @@
 
     <!-- ✅ CSS riêng -->
     <link href="~/css/sitebar.css" rel="stylesheet" />
+    <link href="~/css/print.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -30,7 +31,7 @@
         </a>
 
         <a asp-controller="DeTai" asp-action="Index" class="@(ViewData["Active"] == "DeTai" ? "active" : "")">
-            <!-- ✅ Icon bình thí nghiệm từ Font Awesome -->
+            
             <i class="fa-solid fa-flask me-2"></i> <span>Đề tài KH&CN</span>
         </a>
 

@@ -1,4 +1,4 @@
-﻿@model List<SciTrack.web.Models.ThietBi>
+@model List<SciTrack.web.Models.ThietBi>
 @{
     ViewData["Title"] = "Thiết bị KHCN";
     ViewData["Active"] = "ThietBi";
@@ -118,7 +118,7 @@
                                     onclick="return confirm('Bạn có chắc muốn xóa thiết bị này?');">
                                 <i class="bi bi-trash me-1"></i>Xóa
                             </button>
-                            <button type="button" class="btn btn-secondary">
+                            <button type="button" class="btn btn-secondary" id="btnPrint">
                                 <i class="bi bi-printer me-1"></i>In
                             </button>
                             <a href="/ThietBi/Index" class="btn btn-outline-secondary">
@@ -204,3 +204,41 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/print-helper.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnPrint = document.getElementById('btnPrint');
+            
+            if (btnPrint) {
+                btnPrint.addEventListener('click', function() {
+                    @if (selected != null)
+                    {
+                        <text>
+                        var printData = {
+                            'Mã thiết bị': '@Html.Raw(selected.MaThietBi ?? "N/A")',
+                            'Tên thiết bị': '@Html.Raw(selected.TenThietBi)',
+                            'Ngày đưa vào sử dụng': formatDate('@(selected.NgayDuaVaoSuDung?.ToString("yyyy-MM-dd") ?? "")'),
+                            'Nguyên giá': formatCurrency(@(selected.NguyenGia ?? 0)),
+                            'Khấu hao / hao mòn': formatCurrency(@(selected.KhauHao ?? 0)),
+                            'Giá trị còn lại': formatCurrency(@(selected.GiaTriConLai ?? 0)),
+                            'ĐT/HD KHCN liên quan': '@Html.Raw(selected.DT_HD_KHCN_LienQuan ?? "N/A")',
+                            'Nhật ký sử dụng': '@Html.Raw(selected.NhatKySuDung ?? "N/A")',
+                            'Tình trạng thiết bị': '@Html.Raw(selected.TinhTrangThietBi ?? "N/A")'
+                        };
+                        
+                        printDetail('THIẾT BỊ KHOA HỌC & CÔNG NGHỆ', printData);
+                        </text>
+                    }
+                    else
+                    {
+                        <text>
+                        alert('⚠️ Vui lòng chọn một thiết bị để in!');
+                        </text>
+                    }
+                });
+            }
+        });
+    </script>
+}

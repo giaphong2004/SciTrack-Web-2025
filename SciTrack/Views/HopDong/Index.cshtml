@@ -1,4 +1,4 @@
-﻿@model List<SciTrack.web.Models.HopDong>
+@model List<SciTrack.web.Models.HopDong>
 @{
     ViewData["Title"] = "Quản lý hợp đồng";
     ViewData["Active"] = "HopDong";
@@ -116,7 +116,7 @@
                                     onclick="return confirm('Bạn có chắc muốn xóa hợp đồng này?');">
                                 <i class="bi bi-trash me-1"></i>Xóa
                             </button>
-                            <button type="button" class="btn btn-secondary">
+                            <button type="button" class="btn btn-secondary" id="btnPrint">
                                 <i class="bi bi-printer me-1"></i>In
                             </button>
                             <button type="reset" class="btn btn-outline-secondary">
@@ -190,3 +190,41 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/print-helper.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnPrint = document.getElementById('btnPrint');
+            
+            if (btnPrint) {
+                btnPrint.addEventListener('click', function() {
+                    @if (selected != null)
+                    {
+                        <text>
+                        var printData = {
+                            'Mã hợp đồng': '@Html.Raw(selected.MaHopDong ?? "N/A")',
+                            'Tên đối tác': '@Html.Raw(selected.TenDoiTac)',
+                            'Ngày hiệu lực': formatDate('@(selected.NgayHieuLuc?.ToString("yyyy-MM-dd") ?? "")'),
+                            'Ngày nghiệm thu': formatDate('@(selected.NgayNghiemThu?.ToString("yyyy-MM-dd") ?? "")'),
+                            'Tổng giá trị hợp đồng': formatCurrency(@(selected.TongGiaTriHopDong ?? 0)),
+                            'Chi phí từ kết quả đề tài': formatCurrency(@(selected.ChiPhiKetQuaDeTai ?? 0)),
+                            'Chi phí từ trang thiết bị': formatCurrency(@(selected.ChiPhiTrangThietBi ?? 0)),
+                            'Chi phí hoạt động chuyên môn': formatCurrency(@(selected.ChiPhiHoatDongChuyenMon ?? 0)),
+                            'Lợi nhuận': formatCurrency(@(selected.LoiNhuan ?? 0))
+                        };
+                        
+                        printDetail('HỢP ĐỒNG KHOA HỌC & CÔNG NGHỆ', printData);
+                        </text>
+                    }
+                    else
+                    {
+                        <text>
+                        alert('⚠️ Vui lòng chọn một hợp đồng để in!');
+                        </text>
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SciTrack.web.Models;
 using System.Text;
@@ -249,5 +249,95 @@ namespace SciTrack.web.Controllers
 
             return RedirectToAction("Index");
         }
+        
+        /// <summary>
+        /// Lấy dữ liệu để in phiếu đề tài
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetPrintData(string maDeTai)
+        {
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("api");
+                
+                // Lấy danh sách đề tài
+                var response = await httpClient.GetAsync("/api/DeTais");
+                if (!response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy đề tài!" });
+                }
+                
+                var json = await response.Content.ReadAsStringAsync();
+                var list = JsonSerializer.Deserialize<List<DeTai>>(json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<DeTai>();
+                
+                var deTai = list.FirstOrDefault(x => x.MaDeTai == maDeTai);
+                
+                if (deTai == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy đề tài!" });
+                }
+                
+                // Lấy danh sách kết quả
+                var ketQuaResponse = await httpClient.GetAsync("/api/KetQuaDeTai");
+                var ketQuaList = new List<KetQua>();
+                
+                if (ketQuaResponse.IsSuccessStatusCode)
+                {
+                    var ketQuaJson = await ketQuaResponse.Content.ReadAsStringAsync();
+                    ketQuaList = JsonSerializer.Deserialize<List<KetQua>>(ketQuaJson,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<KetQua>();
+                }
+                
+                var ketQuaTen = deTai.KetQuaDeTaiId.HasValue 
+                    ? ketQuaList.FirstOrDefault(k => k.Id == deTai.KetQuaDeTaiId.Value)?.TenKetQua ?? "Chưa có"
+                    : "Chưa có";
+                
+                // Trả về dữ liệu
+                return Json(new
+                {
+                    success = true,
+                    title = "ĐỀ TÀI KHOA HỌC & CÔNG NGHỆ",
+                    data = new Dictionary<string, string>
+                    {
+                        { "Mã đề tài", deTai.MaDeTai ?? "N/A" },
+                        { "Tên đề tài", deTai.Ten },
+                        { "Ngày cập nhật", FormatDate(deTai.CapNhatTaiSanLanCuoi) },
+                        { "Quyết định tham chiếu", deTai.QuyetDinhThamChieu ?? "N/A" },
+                        { "Quyết định xử lý tài sản", deTai.QuyetDinhXuLyTaiSan ?? "N/A" },
+                        { "Kinh phí thực hiện", FormatCurrency(deTai.KinhPhiThucHien) },
+                        { "Kinh phí đào tạo", FormatCurrency(deTai.KinhPhiDaoTao) },
+                        { "Kinh phí tiêu hao", FormatCurrency(deTai.KinhPhiTieuHao) },
+                        { "Khấu hao thiết bị", FormatCurrency(deTai.KhauHaoThietBi) },
+                        { "Kết quả đề tài", ketQuaTen }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting print data");
+                return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
+            }
+        }
+        
+        #region Helper Methods
+        
+        private string FormatCurrency(decimal? value)
+        {
+            if (!value.HasValue || value == 0)
+                return "0 ₫";
+            
+            return string.Format("{0:N0} ₫", value);
+        }
+        
+        private string FormatDate(DateOnly? date)
+        {
+            if (!date.HasValue)
+                return "";
+            
+            return date.Value.ToString("dd/MM/yyyy");
+        }
+        
+        #endregion
     }
 }

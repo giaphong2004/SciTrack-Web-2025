@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SciTrack.web.Models;
 using System.Text;
 using System.Text.Json;

@@ -1,0 +1,134 @@
+﻿/* ===== CSS CHO CHỨC NĂNG IN ẤN ===== */
+
+/* Style khi không in (ẩn print section) */
+.print-section {
+    display: none;
+}
+
+@media print {
+    /* Ẩn TOÀN BỘ nội dung trang web */
+    body > *:not(.print-section) {
+        display: none !important;
+    }
+
+    /* Chỉ hiển thị phần print-section */
+    .print-section {
+        display: block !important;
+    }
+
+    /* Reset layout cho trang in */
+    body {
+        margin: 0;
+        padding: 20px;
+        background: white !important;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    /* Style cho phần in */
+    .print-section {
+        page-break-inside: avoid;
+        font-family: 'Times New Roman', Times, serif;
+        width: 100%;
+    }
+
+    .print-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #333;
+        padding-bottom: 15px;
+    }
+
+    .print-header h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .print-header p {
+        margin: 5px 0;
+        font-size: 14px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .print-body {
+        margin: 20px 0;
+    }
+
+    .print-body h4 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .print-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .print-body table td {
+        padding: 8px 12px;
+        border: 1px solid #333;
+        font-size: 13px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .print-body table td:first-child {
+        font-weight: bold;
+        width: 35%;
+        background-color: #f5f5f5 !important;
+    }
+
+    .print-footer {
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #333;
+    }
+
+    .print-signature {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+    }
+
+    .print-signature > div {
+        text-align: center;
+        width: 45%;
+    }
+
+    .print-signature p {
+        font-size: 13px;
+        margin: 5px 0;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .print-signature .signature-line {
+        margin-top: 70px;
+        border-top: 1px solid #333;
+        width: 150px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Đảm bảo không bị cắt trang giữa chừng */
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+    }
+
+    table, figure {
+        page-break-inside: avoid;
+    }
+
+    /* Đảm bảo font và màu rõ ràng */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+}

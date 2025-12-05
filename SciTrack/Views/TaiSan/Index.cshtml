@@ -1,4 +1,4 @@
-﻿@model List<SciTrack.web.Models.TaiSan>
+@model List<SciTrack.web.Models.TaiSan>
 @{
     ViewData["Title"] = "Tài sản KH&CN";
     ViewData["Active"] = "TaiSan";
@@ -125,11 +125,12 @@
                             </button>
 
                             <button type="submit" formaction="/TaiSan/Delete" name="id" value="@(selected?.Id ?? 0)"
-                                    class="btn btn-danger">
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Bạn có chắc muốn xóa tài sản này?');">
                                 <i class="bi bi-trash me-1"></i>Xóa
                             </button>
 
-                            <button type="button" class="btn btn-secondary">
+                            <button type="button" class="btn btn-secondary" id="btnPrint" data-id="@(selected?.Id ?? 0)">
                                 <i class="bi bi-printer me-1"></i>In
                             </button>
 
@@ -216,3 +217,39 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/print-helper.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnPrint = document.getElementById('btnPrint');
+            
+            if (btnPrint) {
+                btnPrint.addEventListener('click', async function() {
+                    const id = this.getAttribute('data-id');
+                    
+                    if (!id || id === '0') {
+                        alert('⚠️ Vui lòng chọn một tài sản để in!');
+                        return;
+                    }
+                    
+                    try {
+                        // Gọi API lấy dữ liệu
+                        const response = await fetch(`/TaiSan/GetPrintData?id=${id}`);
+                        const result = await response.json();
+                        
+                        if (!result.success) {
+                            alert('⚠️ ' + result.message);
+                            return;
+                        }
+                        
+                        // Sử dụng hàm printDetail như cũ
+                        printDetail(result.title, result.data);
+                    } catch (error) {
+                        alert('❌ Lỗi khi tải dữ liệu: ' + error.message);
+                    }
+                });
+            }
+        });
+    </script>
+}

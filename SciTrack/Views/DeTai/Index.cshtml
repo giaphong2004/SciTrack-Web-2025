@@ -1,4 +1,4 @@
-﻿@model List<SciTrack.web.Models.DeTai>
+@model List<SciTrack.web.Models.DeTai>
 @{
     ViewData["Title"] = "Đề tài KHCN";
     ViewData["Active"] = "DeTai";
@@ -134,7 +134,7 @@
                                 <i class="bi bi-trash me-1"></i>Xóa
                             </button>
 
-                            <button type="button" class="btn btn-secondary">
+                            <button type="button" class="btn btn-secondary" id="btnPrint" data-ma-de-tai="@(selected?.MaDeTai ?? "")">
                                 <i class="bi bi-printer me-1"></i>In
                             </button>
 
@@ -211,3 +211,39 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/print-helper.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnPrint = document.getElementById('btnPrint');
+            
+            if (btnPrint) {
+                btnPrint.addEventListener('click', async function() {
+                    const maDeTai = this.getAttribute('data-ma-de-tai');
+                    
+                    if (!maDeTai) {
+                        alert('⚠️ Vui lòng chọn một đề tài để in!');
+                        return;
+                    }
+                    
+                    try {
+                        // Gọi API lấy dữ liệu
+                        const response = await fetch(`/DeTai/GetPrintData?maDeTai=${encodeURIComponent(maDeTai)}`);
+                        const result = await response.json();
+                        
+                        if (!result.success) {
+                            alert('⚠️ ' + result.message);
+                            return;
+                        }
+                        
+                        // Sử dụng hàm printDetail như cũ
+                        printDetail(result.title, result.data);
+                    } catch (error) {
+                        alert('❌ Lỗi khi tải dữ liệu: ' + error.message);
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿@model List<SciTrack.web.Models.KetQua>
+@model List<SciTrack.web.Models.KetQua>
 @{
     ViewData["Title"] = "Kết Quả KHCN";
     ViewData["Active"] = "KetQua";
@@ -148,7 +148,7 @@
                                     onclick="return confirm('Bạn có chắc muốn xóa kết quả này?');">
                                 <i class="bi bi-trash me-1"></i>Xóa
                             </button>
-                            <button type="button" class="btn btn-secondary">
+                            <button type="button" class="btn btn-secondary" id="btnPrint">
                                 <i class="bi bi-printer me-1"></i>In
                             </button>
                             <a href="/KetQua/Index" class="btn btn-outline-secondary">
@@ -233,3 +233,50 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/print-helper.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnPrint = document.getElementById('btnPrint');
+            
+            if (btnPrint) {
+                btnPrint.addEventListener('click', function() {
+                    @if (selected != null)
+                    {
+                        var hopDongNames = "";
+                        if (selected.HopDongIds != null && selected.HopDongIds.Any())
+                        {
+                            var selectedHopDongs = hopDongList.Where(h => selected.HopDongIds.Contains(h.Id)).ToList();
+                            hopDongNames = string.Join(", ", selectedHopDongs.Select(h => h.TenDoiTac + " (" + h.MaHopDong + ")"));
+                        }
+                        else
+                        {
+                            hopDongNames = "Không có";
+                        }
+                        
+                        <text>
+                        var printData = {
+                            'Mã kết quả': '@Html.Raw(selected.MaKetQua ?? "N/A")',
+                            'Tên kết quả': '@Html.Raw(selected.TenKetQua)',
+                            'Phân loại': '@Html.Raw(selected.PhanLoai ?? "N/A")',
+                            'Định giá': formatCurrency(@(selected.DinhGia ?? 0)),
+                            'Giá trị còn lại': formatCurrency(@(selected.GiaTriConLai ?? 0)),
+                            'Ngày cập nhật tài sản': formatDate('@(selected.NgayCapNhatTaiSan?.ToString("yyyy-MM-dd") ?? "")'),
+                            'Hợp đồng sử dụng': '@Html.Raw(hopDongNames)'
+                        };
+                        
+                        printDetail('KẾT QUẢ ĐỀ TÀI KHOA HỌC & CÔNG NGHỆ', printData);
+                        </text>
+                    }
+                    else
+                    {
+                        <text>
+                        alert('⚠️ Vui lòng chọn một kết quả để in!');
+                        </text>
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SciTrack.web.Models;
 using System.Text;
 using System.Text.Json;
@@ -263,6 +263,92 @@ namespace SciTrack.web.Controllers
             return RedirectToAction("Index", new { id = model.Id });
         }
 
+        /// <summary>
+        /// Lấy dữ liệu để in phiếu tài sản
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetPrintData(int id)
+        {
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("api");
+                
+                // Lấy thông tin tài sản
+                var response = await httpClient.GetAsync($"/api/TaiSans/{id}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy tài sản!" });
+                }
+                
+                var json = await response.Content.ReadAsStringAsync();
+                var taiSan = JsonSerializer.Deserialize<TaiSan>(json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
+                if (taiSan == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy tài sản!" });
+                }
+                
+                // Lấy danh sách đề tài để tìm tên đề tài
+                var deTaiResponse = await httpClient.GetAsync("/api/DeTais");
+                var deTaiList = new List<DeTai>();
+                
+                if (deTaiResponse.IsSuccessStatusCode)
+                {
+                    var deTaiJson = await deTaiResponse.Content.ReadAsStringAsync();
+                    deTaiList = JsonSerializer.Deserialize<List<DeTai>>(deTaiJson,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<DeTai>();
+                }
+                
+                var deTaiTen = taiSan.MaDeTaiKHCN.HasValue 
+                    ? deTaiList.FirstOrDefault(d => d.Id == taiSan.MaDeTaiKHCN.Value)?.Ten ?? "Không có"
+                    : "Không có";
+                
+                // Trả về dữ liệu
+                return Json(new
+                {
+                    success = true,
+                    title = "TÀI SẢN KHOA HỌC & CÔNG NGHỆ",
+                    data = new Dictionary<string, string>
+                    {
+                        { "Số danh mục", taiSan.SoDanhMuc ?? "N/A" },
+                        { "Tên tài sản", taiSan.Ten },
+                        { "Nguyên giá", FormatCurrency(taiSan.NguyenGia) },
+                        { "Khấu hao", FormatCurrency(taiSan.KhauHao) },
+                        { "Hao mòn", FormatCurrency(taiSan.HaoMon) },
+                        { "Giá trị còn lại", FormatCurrency(taiSan.GiaTriConLai) },
+                        { "Trạng thái", taiSan.TrangThaiTaiSan ?? "N/A" },
+                        { "Ngày cập nhật", FormatDate(taiSan.NgayCapNhat) },
+                        { "Đề tài KH&CN", deTaiTen }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting print data");
+                return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
+            }
+        }
+        
+        #region Helper Methods
+        
+        private string FormatCurrency(decimal? value)
+        {
+            if (!value.HasValue || value == 0)
+                return "0 ₫";
+            
+            return string.Format("{0:N0} ₫", value);
+        }
+        
+        private string FormatDate(DateOnly? date)
+        {
+            if (!date.HasValue)
+                return "";
+            
+            return date.Value.ToString("dd/MM/yyyy");
+        }
+        
+        #endregion
     }
 }
 
