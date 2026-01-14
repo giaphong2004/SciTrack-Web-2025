@@ -1,4 +1,5 @@
 @model List<SciTrack.web.Models.TaiSan>
+@using System.Globalization
 @{
     ViewData["Title"] = "Tài sản KH&CN";
     ViewData["Active"] = "TaiSan";
@@ -49,13 +50,13 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Nguyên giá (ID1.3)</label>
                                 <input type="number" step="0.01" name="NguyenGia" class="form-control" 
-                                       value="@(selected?.NguyenGia ?? 0)" placeholder="0" />
+                                       value="@((selected?.NguyenGia ?? 0).ToString(CultureInfo.InvariantCulture))" placeholder="0" />
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Khấu hao (ID1.4)</label>
                                 <input type="number" step="0.01" name="KhauHao" class="form-control" 
-                                       value="@(selected?.KhauHao ?? 0)" placeholder="0" />
+                                       value="@((selected?.KhauHao ?? 0).ToString(CultureInfo.InvariantCulture))" placeholder="0" />
                             </div>
                         </div>
 
@@ -63,13 +64,13 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Hao mòn (ID1.5)</label>
                                 <input type="number" step="0.01" name="HaoMon" class="form-control" 
-                                       value="@(selected?.HaoMon ?? 0)" placeholder="0" />
+                                       value="@((selected?.HaoMon ?? 0).ToString(CultureInfo.InvariantCulture))" placeholder="0" />
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Giá trị còn lại (ID1.6)</label>
                                 <input type="number" step="0.01" name="GiaTriConLai" class="form-control" 
-                                       value="@(selected?.GiaTriConLai ?? 0)" placeholder="0" />
+                                       value="@((selected?.GiaTriConLai ?? 0).ToString(CultureInfo.InvariantCulture))" placeholder="0" />
                             </div>
                         </div>
 

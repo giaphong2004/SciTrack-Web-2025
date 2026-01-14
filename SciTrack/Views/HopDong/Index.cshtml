@@ -1,4 +1,5 @@
 @model List<SciTrack.web.Models.HopDong>
+@using System.Globalization
 @{
     ViewData["Title"] = "Quản lý hợp đồng";
     ViewData["Active"] = "HopDong";
@@ -64,35 +65,35 @@
                             <label class="form-label fw-semibold">Tổng giá trị hợp đồng (ID5.4)</label>
                             <input type="number" step="0.01" name="TongGiaTriHopDong" class="form-control"
                                    placeholder="Nhập tổng giá trị"
-                                   value="@(selected?.TongGiaTriHopDong ?? 0)" />
+                                   value="@((selected?.TongGiaTriHopDong ?? 0).ToString(CultureInfo.InvariantCulture))" />
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label fw-semibold">Chi phí từ kết quả đề tài (ID5.5)</label>
                             <input type="number" step="0.01" name="ChiPhiKetQuaDeTai" class="form-control"
                                    placeholder="Nhập chi phí"
-                                   value="@(selected?.ChiPhiKetQuaDeTai ?? 0)" />
+                                   value="@((selected?.ChiPhiKetQuaDeTai ?? 0).ToString(CultureInfo.InvariantCulture))" />
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label fw-semibold">Chi phí từ trang thiết bị (ID5.6)</label>
                             <input type="number" step="0.01" name="ChiPhiTrangThietBi" class="form-control"
                                    placeholder="Nhập chi phí"
-                                   value="@(selected?.ChiPhiTrangThietBi ?? 0)" />
+                                   value="@((selected?.ChiPhiTrangThietBi ?? 0).ToString(CultureInfo.InvariantCulture))" />
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label fw-semibold">Chi phí hoạt động chuyên môn (ID5.7)</label>
                             <input type="number" step="0.01" name="ChiPhiHoatDongChuyenMon" class="form-control"
                                    placeholder="Nhập chi phí"
-                                   value="@(selected?.ChiPhiHoatDongChuyenMon ?? 0)" />
+                                   value="@((selected?.ChiPhiHoatDongChuyenMon ?? 0).ToString(CultureInfo.InvariantCulture))" />
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label fw-semibold">Lợi nhuận (ID5.8)</label>
                             <input type="number" step="0.01" name="LoiNhuan" class="form-control"
                                    placeholder="Nhập lợi nhuận"
-                                   value="@(selected?.LoiNhuan ?? 0)" />
+                                   value="@((selected?.LoiNhuan ?? 0).ToString(CultureInfo.InvariantCulture))" />
                         </div>
 
                         @if (selected != null && selected.Id > 0)

@@ -1,4 +1,5 @@
 @model List<SciTrack.web.Models.DeTai>
+@using System.Globalization
 @{
     ViewData["Title"] = "Đề tài KHCN";
     ViewData["Active"] = "DeTai";
@@ -71,12 +72,12 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Kinh phí thực hiện (ID2.6)</label>
                                 <input type="number" step="0.01" name="KinhPhiThucHien" class="form-control" 
-                                       value="@(selected?.KinhPhiThucHien ?? 0)" placeholder="0" />
+                                       value="@((selected?.KinhPhiThucHien ?? 0).ToString(CultureInfo.InvariantCulture))" placeholder="0" />
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Kinh phí đào tạo (ID2.7)</label>
                                 <input type="number" step="0.01" name="KinhPhiDaoTao" class="form-control" 
-                                       value="@(selected?.KinhPhiDaoTao ?? 0)" placeholder="0" />
+                                       value="@((selected?.KinhPhiDaoTao ?? 0).ToString(CultureInfo.InvariantCulture))" placeholder="0" />
                             </div>
                         </div>
 
@@ -84,12 +85,12 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Kinh phí tiêu hao (ID2.8)</label>
                                 <input type="number" step="0.01" name="KinhPhiTieuHao" class="form-control" 
-                                       value="@(selected?.KinhPhiTieuHao ?? 0)" placeholder="0" />
+                                       value="@((selected?.KinhPhiTieuHao ?? 0).ToString(CultureInfo.InvariantCulture))" placeholder="0" />
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Khấu hao thiết bị (ID2.9)</label>
                                 <input type="number" step="0.01" name="KhauHaoThietBi" class="form-control" 
-                                       value="@(selected?.KhauHaoThietBi ?? 0)" placeholder="0" />
+                                       value="@((selected?.KhauHaoThietBi ?? 0).ToString(CultureInfo.InvariantCulture))" placeholder="0" />
                             </div>
                         </div>
 
